@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0b10"/>
+      <stop offset="100%" stop-color="#1a1a28"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="80" y="260" font-family="Inter, Helvetica, Arial, sans-serif"
+        font-weight="900" font-size="120" fill="#ffffff" letter-spacing="-4">UNIVERLAB</text>
+  <text x="80" y="390" font-family="Inter, Helvetica, Arial, sans-serif"
+        font-weight="900" font-size="120" fill="url(#accent)" letter-spacing="-4">MEDIA.</text>
+  <text x="80" y="470" font-family="Inter, Helvetica, Arial, sans-serif"
+        font-weight="500" font-size="28" fill="#888">
+    Video Editing Agency · 영상 기획·촬영·편집·마케팅 원스톱
+  </text>
+  <text x="80" y="560" font-family="Inter, Helvetica, Arial, sans-serif"
+        font-weight="700" font-size="20" fill="#a855f7" letter-spacing="6">UNIVERLABMEDIA.CO.KR</text>
+</svg>

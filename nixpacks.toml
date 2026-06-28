@@ -1,0 +1,18 @@
+# Railway / Nixpacks build configuration
+# Pin Node 22 explicitly so Vite 7 (requires node ^20.19 || >=22.12) builds correctly.
+
+providers = ["node"]
+
+[variables]
+NIXPACKS_NODE_VERSION = "22"
+NPM_CONFIG_CACHE = "/tmp/.npm"
+NPM_CONFIG_PREFER_OFFLINE = "true"
+
+[phases.install]
+cmds = ["npm ci --no-audit --no-fund"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "node server/index.js"
