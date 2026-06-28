@@ -14,6 +14,9 @@ const SmoothScroll = ({ children }) => {
       touchMultiplier: 2,
     });
 
+    // Expose for programmatic scrolling (anchor links, testing).
+    if (typeof window !== 'undefined') window.lenis = lenis;
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);

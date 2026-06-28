@@ -1,80 +1,33 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Video, MonitorPlay, Share2, Smartphone, CheckCircle2, ArrowRight, Plus, Minus, AlertCircle, Lightbulb } from 'lucide-react';
-import TextReveal from '../components/common/TextReveal';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
+import { PageHero, SectionHeader, CTABand, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
-// Animation Variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
-};
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } }
-};
-
-const ServiceHero = () => {
-  const { hero } = useContent('service');
-  return (
-    <section className="relative pt-40 pb-20 overflow-hidden bg-bg-primary transition-colors duration-500 border-b border-black/10 dark:border-white/10">
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="mb-6 flex items-center gap-4"
-          >
-            <span className="h-px w-12 bg-accent-primary"></span>
-            <span className="text-accent-primary font-bold tracking-widest uppercase">{hero.eyebrow}</span>
-          </motion.div>
-
-          <TextReveal>
-            <h1 className="text-6xl md:text-8xl font-black text-text-primary mb-8 leading-[0.9] tracking-tighter">
-              {hero.headlineLine1} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">{hero.headlineLine2}</span>
-            </h1>
-          </TextReveal>
-
-          <TextReveal delay={0.2}>
-            <p className="text-xl md:text-2xl text-text-secondary max-w-2xl leading-relaxed font-medium whitespace-pre-line">
-              {hero.subhead}
-            </p>
-          </TextReveal>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const FailureAnalysisSection = () => {
+const FailureSection = () => {
   const { failure } = useContent('service');
-
   return (
-    <section className="py-32 border-b border-black/10 dark:border-white/10">
-      <div className="container mx-auto px-6">
-        <div className="mb-20">
-          <span className="text-accent-primary font-bold tracking-widest uppercase block mb-4">{failure.eyebrow}</span>
-          <h2 className="text-4xl md:text-6xl font-black text-text-primary mb-4">{failure.headline}</h2>
-          <p className="text-xl text-text-secondary">{failure.subhead}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {failure.reasons.map((reason, index) => (
+    <section className="border-b border-border-primary bg-bg-primary py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeader eyebrow={failure.eyebrow} headline={failure.headline} accent="실패" subhead={failure.subhead} />
+        <motion.div
+          variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
+          className="grid grid-cols-1 gap-6 md:grid-cols-2"
+        >
+          {failure.reasons.map((reason, i) => (
             <motion.div
-              key={reason.title || index}
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: index * 0.1 }}
-              className="p-10 bg-bg-secondary rounded-3xl border border-black/10 dark:border-white/10"
+              key={i} variants={fadeInUp} whileHover={{ y: -6 }}
+              className="rounded-3xl border border-border-primary bg-bg-secondary p-10"
             >
-              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mb-6">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-400">
                 <AlertCircle size={24} />
               </div>
-              <h3 className="text-2xl font-bold text-text-primary mb-4">{reason.title}</h3>
-              <p className="text-text-secondary leading-relaxed">{reason.desc}</p>
+              <h3 className="mb-4 text-2xl font-bold text-text-primary">{reason.title}</h3>
+              <p className="leading-relaxed text-text-secondary">{reason.desc}</p>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -82,28 +35,22 @@ const FailureAnalysisSection = () => {
 
 const PrinciplesSection = () => {
   const { principles } = useContent('service');
-
   return (
-    <section className="py-32 bg-bg-secondary border-b border-black/10 dark:border-white/10">
-      <div className="container mx-auto px-6">
-        <div className="mb-20">
-          <span className="text-accent-primary font-bold tracking-widest uppercase block mb-4">{principles.eyebrow}</span>
-          <h2 className="text-4xl md:text-6xl font-black text-text-primary mb-4">{principles.headline}</h2>
-          <p className="text-xl text-text-secondary">{principles.subhead}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          {principles.items.map((item, index) => (
+    <section className="relative overflow-hidden border-b border-border-primary bg-bg-secondary py-28">
+      <div className="bg-grid absolute inset-0 opacity-30" />
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
+        <SectionHeader eyebrow={principles.eyebrow} headline={principles.headline} accent="경영철칙" subhead={principles.subhead} />
+        <div className="grid grid-cols-1 gap-x-12 gap-y-12 md:grid-cols-2">
+          {principles.items.map((item, i) => (
             <motion.div
-              key={item.num || index}
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-              className="group"
+              key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
+              className="group flex gap-6"
             >
-              <span className="text-6xl font-black text-black/5 dark:text-white/5 group-hover:text-accent-primary/20 transition-colors block mb-4">
-                {item.num}
-              </span>
-              <h3 className="text-3xl font-bold text-text-primary mb-4 group-hover:text-accent-primary transition-colors">{item.title}</h3>
-              <p className="text-lg text-text-secondary leading-relaxed">{item.desc}</p>
+              <span className="text-gradient text-5xl font-black leading-none md:text-6xl">{item.num}</span>
+              <div>
+                <h3 className="mb-3 text-2xl font-bold text-text-primary group-hover:text-accent-primary">{item.title}</h3>
+                <p className="leading-relaxed text-text-secondary">{item.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -114,38 +61,23 @@ const PrinciplesSection = () => {
 
 const ProcessSection = () => {
   const { process } = useContent('service');
-
   return (
-    <section className="py-32 border-b border-black/10 dark:border-white/10">
-      <div className="container mx-auto px-6">
-        <div className="mb-20">
-          <span className="text-accent-primary font-bold tracking-widest uppercase block mb-4">{process.eyebrow}</span>
-          <h2 className="text-4xl md:text-6xl font-black text-text-primary">{process.headline}</h2>
-        </div>
-
-        <div className="border-t-2 border-black dark:border-white">
-          {process.steps.map((item, index) => (
+    <section className="border-b border-border-primary bg-bg-primary py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeader eyebrow={process.eyebrow} headline={process.headline} accent="프로세스" />
+        <div className="relative ml-3 border-l border-border-primary pl-8 md:ml-5">
+          {process.steps.map((item, i) => (
             <motion.div
-              key={item.step || index}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              className="group border-b border-black/10 dark:border-white/10 hover:bg-bg-primary transition-all duration-500"
+              key={i}
+              initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.04 }}
+              className="relative pb-10 last:pb-0"
             >
-              <div className="py-12 flex flex-col md:flex-row md:items-center gap-8 md:gap-24 px-4 md:px-8">
-                <div className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-black/20 to-black/0 dark:from-white/20 dark:to-white/0 group-hover:from-accent-primary group-hover:to-accent-primary/50 transition-all duration-500 w-32 shrink-0 leading-none">
-                  {item.step}
-                </div>
-                <div className="flex-1 relative z-10">
-                  <h3 className="text-2xl md:text-4xl font-black text-text-primary mb-4 group-hover:text-accent-primary transition-colors duration-300">
-                    {item.title}
-                  </h3>
-                  <p className="text-lg text-text-secondary leading-relaxed font-medium group-hover:text-text-primary transition-colors duration-300">
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
+              <span className="bg-brand-gradient absolute -left-[2.85rem] flex h-9 w-9 items-center justify-center rounded-full text-sm font-black text-white md:-left-[3.35rem]">
+                {item.step}
+              </span>
+              <h3 className="text-xl font-bold text-text-primary md:text-2xl">{item.title}</h3>
+              <p className="mt-2 leading-relaxed text-text-secondary">{item.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -155,18 +87,24 @@ const ProcessSection = () => {
 };
 
 const Service = () => {
-  const { seo } = useContent('service');
+  const { seo, hero } = useContent('service');
   return (
-    <div className="bg-bg-primary min-h-screen transition-colors duration-500">
-      <SEO
-        title={seo.title}
-        description={seo.description}
-        path="/service"
+    <div className="bg-bg-primary">
+      <SEO title={seo.title} description={seo.description} path="/service" />
+      <PageHero
+        eyebrow={hero.eyebrow}
+        title={`${hero.headlineLine1}\n${hero.headlineLine2}`}
+        accent={hero.headlineLine2}
+        subhead={hero.subhead}
       />
-      <ServiceHero />
-      <FailureAnalysisSection />
+      <FailureSection />
       <PrinciplesSection />
       <ProcessSection />
+      <CTABand
+        headline={'돈되는 유튜브,\n그 비결을 알고 싶으신가요?'}
+        subhead="유니버랩 미디어의 모든 연구 성과, 이제는 당신이 주인공이 될 차례입니다."
+        button="전문 상담 받기"
+      />
     </div>
   );
 };

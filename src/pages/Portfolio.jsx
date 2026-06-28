@@ -1,61 +1,38 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import TextReveal from '../components/common/TextReveal';
+import { Play } from 'lucide-react';
 import SEO from '../components/SEO';
+import { PageHero, VideoLightbox } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
-// Animation Variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
-};
+const ALL = '전체';
 
 const Portfolio = () => {
   const { seo, hero, filters, projects } = useContent('portfolio');
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState(ALL);
+  const [video, setVideo] = useState(null);
 
-  const projectItems = projects.items;
-  const filteredProjects = filter === 'All' ? projectItems : projectItems.filter(p => p.category === filter);
+  const items = projects.items;
+  const filtered = filter === ALL ? items : items.filter((p) => p.category === filter);
 
   return (
-    <div className="bg-bg-primary min-h-screen transition-colors duration-500">
-      <SEO
-        title={seo.title}
-        description={seo.description}
-        path="/portfolio"
-      />
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-20 overflow-hidden border-b border-black/10 dark:border-white/10">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial="hidden" animate="visible" variants={fadeInUp}
-            className="max-w-4xl"
-          >
-            <span className="text-accent-primary font-bold tracking-widest uppercase block mb-6">{hero.eyebrow}</span>
-            <h1 className="text-5xl md:text-8xl font-black text-text-primary mb-8 leading-tight whitespace-pre-line">
-              {hero.headline}
-            </h1>
-            <p className="text-xl md:text-2xl text-text-secondary leading-relaxed font-medium max-w-3xl">
-              {hero.subhead}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="bg-bg-primary">
+      <SEO title={seo.title} description={seo.description} path="/portfolio" />
 
-      {/* Filter & Grid */}
+      <PageHero eyebrow={hero.eyebrow} title={hero.headline} accent="불여일견" subhead={hero.subhead} />
+
       <section className="py-20">
-        <div className="container mx-auto px-6">
+        <div className="mx-auto max-w-7xl px-6">
           {/* Filters */}
-          <div className="flex flex-wrap gap-4 mb-16">
+          <div className="mb-12 flex flex-wrap gap-3">
             {filters.items.map((item) => (
               <button
                 key={item.name}
                 onClick={() => setFilter(item.name)}
-                className={`px-6 py-3 rounded-full text-sm font-bold uppercase tracking-wider transition-all ${
+                className={`rounded-full px-6 py-2.5 text-sm font-bold transition-all ${
                   filter === item.name
-                    ? 'bg-accent-primary text-white'
-                    : 'bg-bg-secondary text-text-secondary hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'bg-brand-gradient text-white shadow-lg shadow-accent-primary/30'
+                    : 'border border-border-primary bg-bg-secondary text-text-secondary hover:border-accent-primary hover:text-text-primary'
                 }`}
               >
                 {item.name}
@@ -63,40 +40,41 @@ const Portfolio = () => {
             ))}
           </div>
 
-          {/* Projects Grid */}
-          <motion.div
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            <AnimatePresence>
-              {filteredProjects.map((project, index) => (
-                <motion.div
+          {/* Grid */}
+          <motion.div layout className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((project) => (
+                <motion.button
                   layout
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  key={project.videoId}
+                  initial={{ opacity: 0, scale: 0.92 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  exit={{ opacity: 0, scale: 0.92 }}
                   transition={{ duration: 0.3 }}
-                  key={project.title || index}
-                  className="group relative aspect-video overflow-hidden rounded-2xl cursor-pointer"
+                  onClick={() => setVideo(project.videoId)}
+                  className="group relative aspect-video overflow-hidden rounded-2xl border border-border-primary bg-black text-left"
                 >
                   <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src={`https://img.youtube.com/vi/${project.videoId}/hqdefault.jpg`}
+                    alt=""
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-                    <span className="text-accent-primary text-sm font-bold uppercase tracking-widest mb-2">{project.category}</span>
-                    <h3 className="text-white text-2xl font-bold flex items-center gap-2">
-                      {project.title}
-                      <ArrowUpRight size={20} />
-                    </h3>
-                  </div>
-                </motion.div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                  <span className="absolute left-3 top-3 rounded-full bg-black/60 px-3 py-1 text-[11px] font-bold text-white backdrop-blur">
+                    {project.category}
+                  </span>
+                  <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 backdrop-blur transition-all duration-300 group-hover:scale-110 group-hover:bg-accent-primary">
+                    <Play size={22} className="ml-0.5 fill-white text-white" />
+                  </span>
+                </motion.button>
               ))}
             </AnimatePresence>
           </motion.div>
         </div>
       </section>
+
+      <VideoLightbox videoId={video} onClose={() => setVideo(null)} />
     </div>
   );
 };
