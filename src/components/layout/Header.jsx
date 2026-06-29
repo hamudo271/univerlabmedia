@@ -12,6 +12,11 @@ const Header = () => {
   const { header } = useContent('global');
   const { brand, nav: navItems, themeToggleAria } = header;
 
+  // The home hero is always a dark image, so before scrolling the transparent
+  // header must use white text/logo regardless of theme. Inner-page heroes use
+  // the theme background, so they follow the normal theme colors.
+  const onHero = location.pathname === '/' && !scrolled;
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -39,7 +44,7 @@ const Header = () => {
             src="/brand/logo.png"
             alt={brand}
             className={`h-9 w-auto transition-all md:h-10 ${
-              !scrolled || theme === 'dark' ? 'brightness-0 invert' : ''
+              onHero || theme === 'dark' ? 'brightness-0 invert' : ''
             }`}
           />
         </Link>
@@ -50,10 +55,12 @@ const Header = () => {
             <Link
               key={item.path}
               to={item.path}
-              className="text-sm font-medium tracking-wide uppercase relative group transition-colors text-text-primary/70 hover:text-text-primary"
+              className={`text-sm font-medium tracking-wide uppercase relative group transition-colors ${
+                onHero ? 'text-white/80 hover:text-white' : 'text-text-primary/70 hover:text-text-primary'
+              }`}
             >
               {item.name}
-              <span className="absolute -bottom-2 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full bg-text-primary" />
+              <span className={`absolute -bottom-2 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${onHero ? 'bg-white' : 'bg-text-primary'}`} />
             </Link>
           ))}
 
@@ -61,9 +68,9 @@ const Header = () => {
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-full transition-colors ${
-              scrolled
-                ? 'hover:bg-text-primary/5 text-text-primary'
-                : 'hover:bg-text-primary/10 text-text-primary'
+              onHero
+                ? 'hover:bg-white/10 text-white'
+                : 'hover:bg-text-primary/5 text-text-primary'
             }`}
             aria-label={themeToggleAria}
           >
@@ -77,14 +84,14 @@ const Header = () => {
             onClick={toggleTheme}
             aria-label={themeToggleAria}
             className={`p-2 rounded-full transition-colors ${
-              isOpen ? 'text-white' : 'text-text-primary'
+              isOpen || onHero ? 'text-white' : 'text-text-primary'
             }`}
           >
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
           <button
-            className={`${isOpen ? 'text-white' : 'text-text-primary'} transition-colors`}
+            className={`${isOpen || onHero ? 'text-white' : 'text-text-primary'} transition-colors`}
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle navigation"
           >
