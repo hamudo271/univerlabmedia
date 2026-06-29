@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://univerlab-production.up.railway.app/sitemap.xml
+Sitemap: https://univerlabmedia.co.kr/sitemap.xml

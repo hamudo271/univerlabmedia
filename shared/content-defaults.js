@@ -14,9 +14,9 @@ export const defaults = {
   // ───────────────────────────────────────────────────────────── Home
   home: {
     seo: {
-      title: "홈",
+      title: "유튜브 영상제작·편집 대행",
       description:
-        "영상 기획·촬영·편집·마케팅을 한 번에 책임지는 유니버랩 미디어의 프리미엄 올인원 패키지를 확인하세요.",
+        "유튜브 영상제작부터 숏폼·전문 편집·채널 운영까지. 700건 이상 제작한 유니버랩 미디어가 기획·촬영·편집·마케팅을 올인원으로 제공합니다.",
     },
     hero: {
       badge: "Video Editing Agency",
@@ -1020,8 +1020,8 @@ export const defaults = {
       defaultTitle: "유니버랩 미디어 | 영상 기획·촬영·편집·마케팅 원스톱 에이전시",
       defaultDescription:
         "유니버랩 미디어는 영상 기획·촬영·편집·마케팅을 하나의 프로세스로 제공하는 영상 제작 전문 에이전시입니다.",
-      siteUrl: "https://univerlab-production.up.railway.app",
-      ogImage: "/og-image.svg",
+      siteUrl: "https://univerlabmedia.co.kr",
+      ogImage: "/og-image.png",
     },
     header: {
       brand: "UNIVERLAB",

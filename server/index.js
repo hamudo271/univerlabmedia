@@ -33,6 +33,32 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// --- SEO: legacy URL redirects (preserve search rankings on domain switch) -
+// The previous WordPress site used different slugs + trailing slashes. Map
+// them to the new React routes with 301s so accumulated SEO carries over.
+const LEGACY_REDIRECTS = {
+  "/portpolio": "/portfolio", // old portfolio slug (typo preserved from WP)
+  "/service-2": "/pricing", // old "가격 안내" pointed at /service-2
+  "/about": "/company",
+  "/work": "/portfolio",
+};
+app.use((req, res, next) => {
+  if (req.method !== "GET" && req.method !== "HEAD") return next();
+  const p = req.path;
+  // Skip API, uploads, and any file request (has an extension).
+  if (p.startsWith("/api/") || p.startsWith("/uploads/") || p.includes(".")) {
+    return next();
+  }
+  // Normalise trailing slash (except root): /company/ -> /company
+  const noSlash = p.length > 1 && p.endsWith("/") ? p.slice(0, -1) : p;
+  const target = LEGACY_REDIRECTS[noSlash] || (noSlash !== p ? noSlash : null);
+  if (target) {
+    const qs = req.url.slice(p.length); // preserve query string
+    return res.redirect(301, target + qs);
+  }
+  next();
+});
+
 // --- Uploaded images (public) ---------------------------------------------
 app.use(
   "/uploads",

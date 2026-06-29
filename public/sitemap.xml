@@ -1,37 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://univerlab-production.up.railway.app/</loc>
+    <loc>https://univerlabmedia.co.kr/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://univerlab-production.up.railway.app/company</loc>
+    <loc>https://univerlabmedia.co.kr/company</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://univerlab-production.up.railway.app/service</loc>
+    <loc>https://univerlabmedia.co.kr/service</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://univerlab-production.up.railway.app/portfolio</loc>
+    <loc>https://univerlabmedia.co.kr/service/service-1</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://univerlabmedia.co.kr/service/service-2</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://univerlabmedia.co.kr/service/service-3</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://univerlabmedia.co.kr/service/service-4</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://univerlabmedia.co.kr/portfolio</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://univerlab-production.up.railway.app/pricing</loc>
+    <loc>https://univerlabmedia.co.kr/pricing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://univerlab-production.up.railway.app/column</loc>
+    <loc>https://univerlabmedia.co.kr/column</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://univerlab-production.up.railway.app/contact</loc>
+    <loc>https://univerlabmedia.co.kr/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
