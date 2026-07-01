@@ -30,7 +30,24 @@ const Header = () => {
     setIsOpen(false);
   }, [location]);
 
+  // Lock background scroll while the mobile menu is open (also pause Lenis so
+  // the smooth-scroll loop doesn't keep moving the page behind the overlay).
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      window.lenis?.stop();
+    } else {
+      document.body.style.overflow = '';
+      window.lenis?.start();
+    }
+    return () => {
+      document.body.style.overflow = '';
+      window.lenis?.start();
+    };
+  }, [isOpen]);
+
   return (
+    <>
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         scrolled
@@ -99,25 +116,31 @@ const Header = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile Navigation Overlay */}
-      <div className={`fixed inset-0 bg-black z-40 transition-transform duration-500 ease-in-out md:hidden ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        <div className="flex flex-col items-center justify-center h-full space-y-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className="text-white/80 hover:text-white text-2xl font-bold tracking-widest uppercase"
-              onClick={() => setIsOpen(false)}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </div>
-      </div>
     </header>
+
+    {/* Mobile Navigation Overlay — rendered as a sibling of <header> so the
+        header's backdrop-blur (which creates a containing block) can't collapse
+        this fixed overlay. z-40 keeps it below the header bar (z-50) so the
+        logo + close button stay tappable on top. */}
+    <div
+      className={`fixed inset-0 z-40 h-[100dvh] overflow-y-auto bg-black transition-transform duration-500 ease-in-out md:hidden ${
+        isOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}
+    >
+      <nav className="flex min-h-full flex-col items-center justify-center gap-8 py-28">
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className="text-2xl font-bold uppercase tracking-widest text-white/80 hover:text-white"
+            onClick={() => setIsOpen(false)}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </nav>
+    </div>
+    </>
   );
 };
 

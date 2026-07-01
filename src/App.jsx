@@ -12,11 +12,15 @@ import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 
 import SmoothScroll from './components/common/SmoothScroll';
+import ScrollToTop from './components/common/ScrollToTop';
+import TopProgressBar from './components/common/TopProgressBar';
 import AdminApp from './admin/AdminApp.jsx';
 
 function PublicSite() {
   return (
     <SmoothScroll>
+      <ScrollToTop />
+      <TopProgressBar />
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />

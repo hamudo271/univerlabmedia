@@ -142,6 +142,12 @@ body {
   animation: marquee 36s linear infinite;
 }
 
+@keyframes route-progress {
+  0%   { width: 0%;   opacity: 1; }
+  60%  { width: 80%;  opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
 @keyframes float-slow {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-12px); }
