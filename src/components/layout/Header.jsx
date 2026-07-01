@@ -61,31 +61,56 @@ const Header = () => {
             />
           </Link>
 
-          {/* Animated hamburger — shown on every viewport, morphs to an X when open */}
-          <button
-            onClick={() => setIsOpen((v) => !v)}
-            aria-label="Toggle navigation"
-            aria-expanded={isOpen}
-            className="relative z-[60] -mr-2 flex h-11 w-11 items-center justify-center"
-          >
-            <span className="relative block h-4 w-7">
-              <span
-                className={`absolute left-0 block h-[2px] rounded-full transition-all duration-300 ease-in-out ${barColor} ${
-                  isOpen ? 'top-1/2 w-7 -translate-y-1/2 rotate-45' : 'top-0 w-7'
-                }`}
-              />
-              <span
-                className={`absolute left-0 top-1/2 block h-[2px] -translate-y-1/2 rounded-full transition-all duration-300 ease-in-out ${barColor} ${
-                  isOpen ? 'w-0 opacity-0' : 'w-5 opacity-100'
-                }`}
-              />
-              <span
-                className={`absolute left-0 block h-[2px] rounded-full transition-all duration-300 ease-in-out ${barColor} ${
-                  isOpen ? 'bottom-1/2 w-7 translate-y-1/2 -rotate-45' : 'bottom-0 w-7'
-                }`}
-              />
-            </span>
-          </button>
+          <div className="flex items-center gap-6 lg:gap-9">
+            {/* Desktop / tablet horizontal nav — directly clickable. Hidden on
+                mobile and while the full-screen menu is open. */}
+            <nav
+              className={`items-center gap-7 lg:gap-9 ${isOpen ? 'hidden' : 'hidden md:flex'}`}
+            >
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`group relative text-sm font-medium uppercase tracking-wide transition-colors ${
+                    onHero ? 'text-white/80 hover:text-white' : 'text-text-primary/70 hover:text-text-primary'
+                  }`}
+                >
+                  {item.name}
+                  <span
+                    className={`absolute -bottom-2 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full ${
+                      onHero ? 'bg-white' : 'bg-text-primary'
+                    }`}
+                  />
+                </Link>
+              ))}
+            </nav>
+
+            {/* Animated hamburger — all viewports, morphs to an X when open */}
+            <button
+              onClick={() => setIsOpen((v) => !v)}
+              aria-label="Toggle navigation"
+              aria-expanded={isOpen}
+              className="relative z-[60] -mr-2 flex h-11 w-11 items-center justify-center"
+            >
+              <span className="relative block h-4 w-7">
+                <span
+                  className={`absolute left-0 block h-[2px] rounded-full transition-all duration-300 ease-in-out ${barColor} ${
+                    isOpen ? 'top-1/2 w-7 -translate-y-1/2 rotate-45' : 'top-0 w-7'
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 top-1/2 block h-[2px] -translate-y-1/2 rounded-full transition-all duration-300 ease-in-out ${barColor} ${
+                    isOpen ? 'w-0 opacity-0' : 'w-5 opacity-100'
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 block h-[2px] rounded-full transition-all duration-300 ease-in-out ${barColor} ${
+                    isOpen ? 'bottom-1/2 w-7 translate-y-1/2 -rotate-45' : 'bottom-0 w-7'
+                  }`}
+                />
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
