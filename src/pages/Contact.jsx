@@ -65,6 +65,15 @@ const Contact = () => {
   const { seo, hero, info, form } = useContent('contact');
   const [status, setStatus] = useState('idle'); // idle | sending | sent | error
   const [error, setError] = useState('');
+  const [phone, setPhone] = useState('');
+
+  // Auto-format a Korean mobile number as 010-XXXX-XXXX while typing (max 11 digits).
+  const formatPhone = (v) => {
+    const d = v.replace(/\D/g, '').slice(0, 11);
+    if (d.length < 4) return d;
+    if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`;
+    return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -161,7 +170,11 @@ const Contact = () => {
                     <input name="position" type="text" className={fieldCls} placeholder={form.positionPlaceholder} />
                   </Field>
                   <Field label={form.phoneLabel} required>
-                    <input name="phone" required type="tel" className={fieldCls} placeholder={form.phonePlaceholder} />
+                    <input
+                      name="phone" required type="tel" inputMode="numeric" maxLength={13}
+                      value={phone} onChange={(e) => setPhone(formatPhone(e.target.value))}
+                      className={fieldCls} placeholder={form.phonePlaceholder}
+                    />
                   </Field>
                 </div>
 
