@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
 import { useContent } from '../../context/ContentContext.jsx';
 
 const Header = () => {
@@ -11,25 +10,25 @@ const Header = () => {
   const { brand, nav: navItems } = header;
 
   // The home hero is always a dark image, so before scrolling the transparent
-  // header must use white text/logo regardless of theme. Inner-page heroes use
-  // the theme background, so they follow the normal theme colors.
+  // header must use white text/logo. When the menu is open the overlay behind
+  // is black, so the logo + hamburger must also go white.
   const onHero = location.pathname === '/' && !scrolled;
+  const light = isOpen || onHero; // white logo / bars
+  const barColor = light ? 'bg-white' : 'bg-text-primary';
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Close the menu on route change.
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
 
-  // Lock background scroll while the mobile menu is open (also pause Lenis so
-  // the smooth-scroll loop doesn't keep moving the page behind the overlay).
+  // Lock background scroll while the menu is open (pause Lenis too, so the
+  // smooth-scroll loop doesn't keep moving the page behind the overlay).
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -46,75 +45,74 @@ const Header = () => {
 
   return (
     <>
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-        scrolled
-          ? 'bg-bg-primary/90 backdrop-blur-md py-4 border-b border-border-primary shadow-sm'
-          : 'bg-transparent py-8'
-      }`}
-    >
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        <Link to="/" className="z-50 flex items-center transition-colors" aria-label={brand}>
-          <img
-            src="/brand/logo.png"
-            alt={brand}
-            className={`h-9 w-auto transition-all md:h-10 ${
-              onHero ? 'brightness-0 invert' : ''
-            }`}
-          />
-        </Link>
+      <header
+        className={`fixed left-0 top-0 z-50 w-full transition-all duration-500 ${
+          scrolled && !isOpen
+            ? 'border-b border-border-primary bg-bg-primary/90 py-4 shadow-sm backdrop-blur-md'
+            : 'bg-transparent py-8'
+        }`}
+      >
+        <div className="container mx-auto flex items-center justify-between px-6">
+          <Link to="/" className="z-[60] flex items-center" aria-label={brand}>
+            <img
+              src="/brand/logo.png"
+              alt={brand}
+              className={`h-9 w-auto transition-all md:h-10 ${light ? 'brightness-0 invert' : ''}`}
+            />
+          </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8 lg:space-x-12">
-          {navItems.map((item) => (
+          {/* Animated hamburger — shown on every viewport, morphs to an X when open */}
+          <button
+            onClick={() => setIsOpen((v) => !v)}
+            aria-label="Toggle navigation"
+            aria-expanded={isOpen}
+            className="relative z-[60] -mr-2 flex h-11 w-11 items-center justify-center"
+          >
+            <span className="relative block h-4 w-7">
+              <span
+                className={`absolute left-0 block h-[2px] rounded-full transition-all duration-300 ease-in-out ${barColor} ${
+                  isOpen ? 'top-1/2 w-7 -translate-y-1/2 rotate-45' : 'top-0 w-7'
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-1/2 block h-[2px] -translate-y-1/2 rounded-full transition-all duration-300 ease-in-out ${barColor} ${
+                  isOpen ? 'w-0 opacity-0' : 'w-5 opacity-100'
+                }`}
+              />
+              <span
+                className={`absolute left-0 block h-[2px] rounded-full transition-all duration-300 ease-in-out ${barColor} ${
+                  isOpen ? 'bottom-1/2 w-7 translate-y-1/2 -rotate-45' : 'bottom-0 w-7'
+                }`}
+              />
+            </span>
+          </button>
+        </div>
+      </header>
+
+      {/* Full-screen overlay menu (all viewports). Sibling of <header> so the
+          header's backdrop-blur can't become its containing block. Fades in;
+          links stagger up. z-40 keeps the header bar (z-50) tappable on top. */}
+      <div
+        className={`fixed inset-0 z-40 h-[100dvh] overflow-y-auto bg-black transition-opacity duration-500 ${
+          isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      >
+        <nav className="flex min-h-full flex-col items-center justify-center gap-7 py-28 md:gap-9">
+          {navItems.map((item, i) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`text-sm font-medium tracking-wide uppercase relative group transition-colors ${
-                onHero ? 'text-white/80 hover:text-white' : 'text-text-primary/70 hover:text-text-primary'
+              onClick={() => setIsOpen(false)}
+              style={{ transitionDelay: isOpen ? `${120 + i * 60}ms` : '0ms' }}
+              className={`text-3xl font-black uppercase tracking-widest text-white/80 transition-all duration-500 hover:text-white md:text-5xl ${
+                isOpen ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
               }`}
             >
               {item.name}
-              <span className={`absolute -bottom-2 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${onHero ? 'bg-white' : 'bg-text-primary'}`} />
             </Link>
           ))}
         </nav>
-
-        {/* Mobile Menu Button */}
-        <div className="flex items-center gap-4 md:hidden z-50">
-          <button
-            className={`${isOpen || onHero ? 'text-white' : 'text-text-primary'} transition-colors`}
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle navigation"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
       </div>
-    </header>
-
-    {/* Mobile Navigation Overlay — rendered as a sibling of <header> so the
-        header's backdrop-blur (which creates a containing block) can't collapse
-        this fixed overlay. z-40 keeps it below the header bar (z-50) so the
-        logo + close button stay tappable on top. */}
-    <div
-      className={`fixed inset-0 z-40 h-[100dvh] overflow-y-auto bg-black transition-transform duration-500 ease-in-out md:hidden ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}
-    >
-      <nav className="flex min-h-full flex-col items-center justify-center gap-8 py-28">
-        {navItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className="text-2xl font-bold uppercase tracking-widest text-white/80 hover:text-white"
-            onClick={() => setIsOpen(false)}
-          >
-            {item.name}
-          </Link>
-        ))}
-      </nav>
-    </div>
     </>
   );
 };
