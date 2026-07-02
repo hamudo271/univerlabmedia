@@ -9,63 +9,19 @@ import {
   Minus,
   Play,
   Star,
-  X,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import HeroSlider from '../components/home/HeroSlider.jsx';
 import ScarcityBar from '../components/home/ScarcityBar.jsx';
+import {
+  fadeInUp,
+  stagger,
+  Accented,
+  SectionHeader,
+  VideoLightbox,
+} from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
-
-// ── Animation variants ──────────────────────────────────────────
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
-};
-const stagger = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-};
-
-/** Render a headline string, gradient-highlighting the `accent` substring. */
-const Accented = ({ text, accent }) => {
-  if (!accent || !text.includes(accent)) return <>{text}</>;
-  const [before, after] = text.split(accent);
-  return (
-    <>
-      {before}
-      <span className="text-gradient">{accent}</span>
-      {after}
-    </>
-  );
-};
-
-const SectionHeader = ({ eyebrow, headline, accent, subhead, center }) => (
-  <div className={`mb-16 ${center ? 'text-center' : ''}`}>
-    {eyebrow && (
-      <motion.span
-        initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-        className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary"
-      >
-        {eyebrow}
-      </motion.span>
-    )}
-    <motion.h2
-      initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-      className="whitespace-pre-line text-3xl font-black leading-tight tracking-tight text-text-primary md:text-5xl"
-    >
-      <Accented text={headline} accent={accent} />
-    </motion.h2>
-    {subhead && (
-      <motion.p
-        initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-        className={`mt-5 whitespace-pre-line text-lg text-text-secondary ${center ? 'mx-auto max-w-2xl' : 'max-w-2xl'}`}
-      >
-        {subhead}
-      </motion.p>
-    )}
-  </div>
-);
 
 // ── Brand intro (dark, grid + glow, stats) ──────────────────────
 const BrandIntro = () => {
@@ -626,40 +582,6 @@ const FinalCta = () => {
   );
 };
 
-// ── YouTube lightbox ────────────────────────────────────────────
-const Lightbox = ({ videoId, onClose }) => (
-  <AnimatePresence>
-    {videoId && (
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        onClick={onClose}
-        className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 backdrop-blur"
-      >
-        <button
-          onClick={onClose}
-          aria-label="닫기"
-          className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
-        >
-          <X size={22} />
-        </button>
-        <motion.div
-          initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }}
-          onClick={(e) => e.stopPropagation()}
-          className="aspect-video w-full max-w-4xl overflow-hidden rounded-2xl bg-black shadow-2xl"
-        >
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-            title="유니버랩 미디어 제작 사례"
-            className="h-full w-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </motion.div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
-
 // ── Page ────────────────────────────────────────────────────────
 const Home = () => {
   const { seo } = useContent('home');
@@ -679,7 +601,7 @@ const Home = () => {
       <Services />
       <FAQ />
       <FinalCta />
-      <Lightbox videoId={video} onClose={() => setVideo(null)} />
+      <VideoLightbox videoId={video} onClose={() => setVideo(null)} />
       <ScarcityBar />
     </div>
   );
