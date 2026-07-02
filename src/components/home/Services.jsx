@@ -17,7 +17,7 @@ const Services = () => {
           eyebrow="Services" headline={'서비스를\n소개합니다'} accent="소개" center
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((s, i) => (
+          {items.map((s) => (
             <motion.div
               key={s.id}
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
