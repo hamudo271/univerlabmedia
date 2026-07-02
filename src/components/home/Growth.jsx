@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
-import { SectionHeader } from '../common/ui.jsx';
+import { SectionHeader, EASE_STANDARD } from '../common/ui.jsx';
 import { useContent } from '../../context/ContentContext.jsx';
 
 // Stylized browser mockup used beside each growth step
@@ -63,7 +63,7 @@ const Growth = () => {
                   initial={{ opacity: 0, x: flip ? 40 : -40 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: '-80px' }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.7, ease: EASE_STANDARD }}
                   className={flip ? 'md:order-2' : ''}
                 >
                   <span className="bg-brand-gradient mb-5 inline-block rounded-full px-4 py-1.5 text-sm font-bold text-white">

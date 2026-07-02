@@ -3,10 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, X } from 'lucide-react';
 
+// Shared easing curve used across the site's scroll/entrance animations.
+export const EASE_STANDARD = [0.22, 1, 0.36, 1];
+
 // Shared animation variants
 export const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE_STANDARD } },
 };
 export const stagger = {
   hidden: { opacity: 0 },

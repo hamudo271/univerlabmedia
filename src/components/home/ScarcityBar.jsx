@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { X, ArrowRight } from 'lucide-react';
 import { useContent } from '../../context/ContentContext.jsx';
+import { EASE_STANDARD } from '../common/ui.jsx';
 
 /**
  * Tasteful conversion bar pinned to the bottom of the viewport.
@@ -37,7 +38,7 @@ const ScarcityBar = () => {
           initial={{ y: 80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, ease: EASE_STANDARD }}
           className="fixed bottom-4 left-1/2 z-40 w-[min(92%,860px)] -translate-x-1/2"
         >
           <div className="glass flex items-center gap-3 rounded-2xl border border-border-primary px-4 py-3 shadow-2xl shadow-black/30 sm:gap-5 sm:px-6">
