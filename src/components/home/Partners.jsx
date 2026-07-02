@@ -33,7 +33,7 @@ const Partners = () => {
                 src={p.src}
                 alt={p.name}
                 loading="lazy"
-                className="max-h-11 w-auto max-w-[140px] object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 dark:opacity-50 dark:invert dark:hover:opacity-100 dark:hover:invert-0"
+                className="max-h-11 w-auto max-w-[140px] object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
               />
             </motion.div>
           ))}
