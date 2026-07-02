@@ -49,7 +49,7 @@ const Testimonials = () => {
                     </div>
                   </div>
                   {t.brand && (
-                    <img src={t.brand} alt="" className="max-h-6 w-auto object-contain opacity-70 dark:invert" />
+                    <img src={t.brand} alt="" className="max-h-6 w-auto object-contain opacity-70" />
                   )}
                 </div>
                 <p className="text-[15px] leading-relaxed text-text-secondary">{t.body}</p>

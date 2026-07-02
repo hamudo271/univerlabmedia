@@ -31,20 +31,6 @@
   color-scheme: light;
 }
 
-:root.dark {
-  /* Dark Mode — premium deep navy-black */
-  --bg-primary: #07090f;
-  --bg-secondary: #0c1018;
-  --bg-elevated: #11151f;
-  --text-primary: #ffffff;
-  --text-secondary: #98a2b6;
-  --border-primary: #1b2230;
-  --accent-primary: #5b8cff; /* refined blue */
-  --accent-secondary: #a78bfa; /* violet-400 */
-  --accent-soft: #7aa2ff;
-  color-scheme: dark;
-}
-
 * {
   box-sizing: border-box;
 }
