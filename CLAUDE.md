@@ -49,6 +49,12 @@ scripts/generate-sitemap.mjs  빌드 시 public/sitemap.xml 생성
 - **FAQ**: `src/components/common/FaqAccordion.jsx` — Home/Contact 공용. 콘텐츠는 항상 `home.faq`에서 읽음(Contact 포함).
 - **CMS 로딩**: `src/context/ContentContext.jsx` — `useContent('home')` 등으로 슬라이스 소비. `/api/content` 응답을 defaults 위에 **deep-merge**(객체는 재귀, 배열은 통째 교체).
 - **문의 메일**: `server/routes/contact.js` — Resend REST. 필수 필드 검증 + 허니팟(`_hp`).
+- **칼럼/블로그 (Posts)**: `content_entries`와 **완전히 별개인 `posts` 테이블**(migration `003_posts.sql`). content-defaults 아님 — DB 직결.
+  - 공개 API `server/routes/posts.js`(무인증): `GET /api/posts`(발행글, 9개 페이지네이션+카테고리), `/latest`(홈 3개), `/:slug`(조회수 +1). 관리자 API `server/routes/adminPosts.js`(`authRequired` 필수, DB 없으면 503): 목록/단건/생성/수정/`PATCH :id/status`/삭제. row↔camel 매핑·slug 유일화는 `server/lib/posts.js`.
+  - slug: `shared/slugify.js`(한글 보존, 로마자화 안 함). 카테고리 목록: `shared/post-categories.js`.
+  - 공개 화면: `src/pages/Column.jsx`(목록, 발행글 0개면 `column.list.items` 정적 폴백), `src/pages/ColumnDetail.jsx`(`/column/:slug`), 홈 `src/components/home/ColumnHighlights.jsx`(최신 3, 글 없으면 렌더 안 함).
+  - 관리자 UI: `src/admin/posts/`(PostList, PostEditor, RichTextEditor). **Tiptap 에디터**(StarterKit v3 = link·list·blockquote 내장, Image만 별도). 이미지·썸네일은 기존 `/api/uploads`(multer+sharp) 재사용 — Cloudinary 아님. 5분 자동 임시저장.
+  - **AdminApp은 `App.jsx`에서 `lazy()` 코드 분할** — Tiptap이 공개 번들에 안 들어감. admin 관련 import는 이 지연 경계 안에서만.
 
 ## 코딩 컨벤션
 
@@ -78,4 +84,8 @@ scripts/generate-sitemap.mjs  빌드 시 public/sitemap.xml 생성
 - **라이트 전용**: 테마 토글/ThemeContext 없음. `dark:` 클래스나 `:root.dark` 추가하지 말 것.
 - **Header 오버레이**: 모바일 풀스크린 메뉴는 `<header>`의 **형제**여야 함(header의 backdrop-blur가 containing block이 되어 `fixed`가 깨짐). 스크롤 락은 `window.lenis?.stop()` 포함.
 - **Railway 빌드 해시 ≠ 로컬 해시**: 배포 확인은 자산 해시가 아니라 DOM/동작으로.
+- **칼럼 상세는 서버 prerender**: CSR SPA라 `/column/:slug`는 Express가 `renderColumnPost`로 셸 HTML에 title/OG/JSON-LD+본문을 **주입**해 내려줌(index.js, 정적 서빙 앞단). ⚠️ `index.html`의 head 태그 텍스트를 정규식으로 치환하므로, **head의 meta/og 태그 구조를 바꾸면 `server/lib/renderColumnPost.js`의 정규식도 같이 고쳐야** 함. `window.__POST__`로 클라이언트 첫 페인트도 즉시.
+- **sitemap은 이제 동적**: `GET /sitemap.xml`을 Express가 DB의 발행글 포함해 생성(정적 `public/sitemap.xml`보다 우선). 빌드 스크립트의 정적 파일은 폴백.
+- **마이그레이션 자동 적용**: 부팅 시 `runMigrations()`가 신규 `*.sql` 순차 적용 → Railway는 빌드 커맨드에 별도 마이그레이션 불필요. `posts` 테이블도 이 경로로 생성됨.
+- **업로드는 영속 볼륨 필요**: 썸네일/에디터 이미지는 `UPLOAD_DIR`(프로덕션 `/app/uploads`) 디스크 저장 → Railway Volume 마운트 안 하면 재배포 시 이미지 소실.
 - **알려진 lint**(리팩토링과 무관, 기존): eslint flat config가 framer-motion `motion.*` 사용을 인식 못 해 `'motion' is defined but never used` 다수 발생 + ContentContext/ui.jsx의 `react-refresh/only-export-components`. **빌드에는 영향 없음**. 새로 도입 금지이지 기존 것은 무시.
