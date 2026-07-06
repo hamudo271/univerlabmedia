@@ -10,6 +10,7 @@ import Growth from '../components/home/Growth.jsx';
 import Safety from '../components/home/Safety.jsx';
 import Process from '../components/home/Process.jsx';
 import Services from '../components/home/Services.jsx';
+import ColumnHighlights from '../components/home/ColumnHighlights.jsx';
 import FinalCta from '../components/home/FinalCta.jsx';
 import FaqAccordion from '../components/common/FaqAccordion.jsx';
 import { VideoLightbox } from '../components/common/ui.jsx';
@@ -32,6 +33,7 @@ const Home = () => {
       <Safety />
       <Process />
       <Services />
+      <ColumnHighlights />
       <FaqAccordion className="bg-bg-primary py-28" />
       <FinalCta />
       <VideoLightbox videoId={video} onClose={() => setVideo(null)} />
