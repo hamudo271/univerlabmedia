@@ -3,6 +3,8 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Login from "./Login.jsx";
 import AdminLayout from "./AdminLayout.jsx";
 import PageEditor from "./PageEditor.jsx";
+import PostList from "./posts/PostList.jsx";
+import PostEditor from "./posts/PostEditor.jsx";
 import { authApi, getToken, clearToken } from "../lib/api.js";
 import { pageOrder } from "../../shared/content-schema.js";
 
@@ -54,6 +56,9 @@ export default function AdminApp() {
           element={<Navigate to={`pages/${pageOrder[0]}`} replace />}
         />
         <Route path="pages/:pageKey" element={<PageEditorRoute />} />
+        <Route path="posts" element={<PostList />} />
+        <Route path="posts/new" element={<PostEditor />} />
+        <Route path="posts/:id/edit" element={<PostEditorRoute2 />} />
         <Route path="*" element={<Navigate to={`pages/${pageOrder[0]}`} replace />} />
       </Routes>
     </AdminLayout>
@@ -72,4 +77,10 @@ function PageEditorRoute() {
   }, [pageKey, navigate]);
   if (!pageOrder.includes(pageKey)) return null;
   return <PageEditor key={pageKey} pageKey={pageKey} />;
+}
+
+// Post editor in edit mode — keyed by id so switching posts remounts cleanly.
+function PostEditorRoute2() {
+  const { id } = useParams();
+  return <PostEditor key={id} postId={id} />;
 }

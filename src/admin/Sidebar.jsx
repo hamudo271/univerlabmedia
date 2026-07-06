@@ -15,6 +15,27 @@ export default function Sidebar() {
       </div>
 
       <ul className="flex-1 overflow-y-auto py-2">
+        <li>
+          <NavLink
+            to="/admin/posts"
+            className={({ isActive }) =>
+              `block px-5 py-2.5 text-sm transition border-l-2 ${
+                isActive
+                  ? "bg-slate-800 text-white border-blue-500"
+                  : "text-slate-300 border-transparent hover:bg-slate-800/60 hover:text-white"
+              }`
+            }
+          >
+            <span className="block font-semibold">칼럼 관리 (블로그)</span>
+            <span className="block text-[10px] font-mono text-slate-500">
+              posts
+            </span>
+          </NavLink>
+        </li>
+
+        <li className="px-5 pt-4 pb-1 text-[10px] uppercase tracking-wider text-slate-600">
+          페이지 콘텐츠
+        </li>
         {pageOrder.map((key) => (
           <li key={key}>
             <NavLink
