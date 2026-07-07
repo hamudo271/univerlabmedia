@@ -31,7 +31,7 @@ const Footer = () => {
             <img
               src="/brand/logo.png"
               alt={brand}
-              className="mb-5 h-10 w-auto"
+              className="mb-5 h-10 w-auto dark:brightness-0 dark:invert"
             />
             <p className="text-sm max-w-md leading-relaxed whitespace-pre-line">
               {tagline}

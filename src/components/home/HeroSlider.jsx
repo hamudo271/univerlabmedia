@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useContent } from '../../context/ContentContext.jsx';
-import { EASE_STANDARD } from '../common/ui.jsx';
 
 const AUTOPLAY_MS = 6000;
 
@@ -102,7 +101,7 @@ const HeroSlider = () => {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.6, ease: EASE_STANDARD }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white/90 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent-soft" />
