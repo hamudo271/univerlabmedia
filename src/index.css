@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Class-based dark variant. This site is light-only (ThemeProvider forces the
+   .light class and never adds .dark), so tie `dark:` utilities to the .dark
+   class instead of Tailwind v4's default prefers-color-scheme media query.
+   Otherwise dark: utilities (e.g. logo `dark:invert`) fire on an OS dark
+   preference while the layout stays light — inverting logos into invisibility. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme { /* Tailwind CSS v4 Theme Configuration */
   --font-sans: "Pretendard Variable", "Pretendard", "Inter", system-ui, -apple-system, sans-serif;
 

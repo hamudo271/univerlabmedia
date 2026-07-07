@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Target, Zap, Users, BarChart3, Sparkles } from 'lucide-react';
 import SEO from '../components/SEO';
-import { PageHero, SectionHeader, FinalCta, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { PageHero, SectionHeader, FinalCta, ServiceCards, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 const teamIcons = [Target, Zap, Users, BarChart3];
@@ -92,6 +92,8 @@ const Company = () => {
           </motion.div>
         </div>
       </section>
+
+      <ServiceCards withMore />
 
       <FinalCta />
     </div>
