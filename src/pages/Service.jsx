@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
-import { PageHero, SectionHeader, FinalCta, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { PageHero, SectionHeader, FinalCta, ServiceCards, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 const FailureSection = () => {
@@ -97,6 +97,7 @@ const Service = () => {
         accent={hero.headlineLine2}
         subhead={hero.subhead}
       />
+      <ServiceCards />
       <FailureSection />
       <PrinciplesSection />
       <ProcessSection />

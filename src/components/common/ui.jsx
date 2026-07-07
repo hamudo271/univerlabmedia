@@ -194,6 +194,68 @@ export const FinalCta = () => {
   );
 };
 
+/** Hexagon logo watermark — echoes the UNIVER LAB brand mark. */
+const HexMark = ({ className = '' }) => (
+  <svg viewBox="0 0 100 100" fill="none" className={className} aria-hidden>
+    <path d="M50 4 L91 27 V73 L50 96 L9 73 V27 Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
+    <path d="M50 26 L72 39 V65 L50 78 L28 65 V39 Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" opacity="0.6" />
+  </svg>
+);
+
+/**
+ * Service navigation cards — one per /service/:id detail page.
+ * Shared by Home, Service and Company so the four detail pages are always
+ * reachable through one consistent, on-brand card grid.
+ * Pass `withMore` to append a "서비스 더 보기" → /service button.
+ */
+export const ServiceCards = ({ withMore = false }) => {
+  const { services } = useContent('serviceDetail');
+  const items = services.items;
+  return (
+    <section className="border-y border-border-primary bg-bg-secondary py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeader eyebrow="Services" headline={'서비스를\n소개합니다'} accent="소개" center />
+        <motion.div
+          variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {items.map((s, i) => (
+            <motion.div key={s.id} variants={fadeInUp} whileHover={{ y: -8 }}>
+              <Link
+                to={`/service/${s.id}`}
+                className="bg-brand-gradient group relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-3xl p-7 shadow-lg shadow-black/5 transition-shadow hover:shadow-2xl hover:shadow-accent-primary/25"
+              >
+                {/* progressive darkening — bright brand → deep navy across the row */}
+                <div className="absolute inset-0" style={{ backgroundColor: `rgba(9, 14, 40, ${0.06 + i * 0.17})` }} />
+                <HexMark className="absolute -right-4 -top-4 h-28 w-28 text-white/15 transition-transform duration-500 group-hover:rotate-12" />
+                <span className="relative z-10 text-xs font-semibold uppercase tracking-[0.15em] text-white/70">
+                  {s.subtitle}
+                </span>
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-black leading-snug text-white">{s.title}</h3>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-white/90 transition-transform group-hover:translate-x-1">
+                    자세히 보기 <ArrowRight size={15} />
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+        {withMore && (
+          <div className="mt-14 text-center">
+            <Link
+              to="/service"
+              className="inline-flex items-center gap-2 rounded-full border border-border-primary bg-bg-primary px-8 py-4 font-bold text-text-primary transition-colors hover:border-accent-primary hover:text-accent-primary"
+            >
+              서비스 더 보기 <ArrowRight size={18} />
+            </Link>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
 /** Reusable YouTube lightbox. */
 export const VideoLightbox = ({ videoId, onClose }) => (
   <AnimatePresence>
