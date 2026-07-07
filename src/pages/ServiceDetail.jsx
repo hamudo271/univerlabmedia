@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
 import SEO from '../components/SEO';
-import { SectionHeader, CTABand, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { SectionHeader, FinalCta, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 const ServiceDetail = () => {
@@ -110,7 +110,7 @@ const ServiceDetail = () => {
         </div>
       </section>
 
-      <CTABand headline={shared.ctaHeadline} subhead={shared.ctaSubhead} button={shared.ctaButton} />
+      <FinalCta />
     </div>
   );
 };

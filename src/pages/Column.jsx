@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
-import { PageHero, CTABand, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { PageHero, FinalCta, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 import { postsApi } from '../lib/api.js';
 
@@ -111,11 +111,7 @@ const Column = () => {
         </div>
       </section>
 
-      <CTABand
-        headline={'더 궁금한 점이\n있으신가요?'}
-        subhead="유니버랩 미디어가 직접 답해드립니다. 지금 문의해보세요."
-        button="문의하기"
-      />
+      <FinalCta />
     </div>
   );
 };
