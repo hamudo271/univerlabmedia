@@ -21,6 +21,11 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@tiptap/extension-image": "^3.27.2",
+    "@tiptap/extension-placeholder": "^3.27.2",
+    "@tiptap/pm": "^3.27.2",
+    "@tiptap/react": "^3.27.2",
+    "@tiptap/starter-kit": "^3.27.2",
     "bcryptjs": "^3.0.3",
     "compression": "^1.8.1",
     "cors": "^2.8.6",

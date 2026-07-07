@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import HeroSlider from '../components/home/HeroSlider.jsx';
 import ScarcityBar from '../components/home/ScarcityBar.jsx';
+import ColumnHighlights from '../components/home/ColumnHighlights.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 // ── Animation variants ──────────────────────────────────────────
@@ -677,6 +678,7 @@ const Home = () => {
       <Safety />
       <Process />
       <Services />
+      <ColumnHighlights />
       <FAQ />
       <FinalCta />
       <Lightbox videoId={video} onClose={() => setVideo(null)} />

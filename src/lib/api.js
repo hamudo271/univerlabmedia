@@ -74,6 +74,7 @@ export const api = {
   get: (path, opts) => request("GET", path, opts),
   post: (path, body, opts) => request("POST", path, { ...opts, body }),
   put: (path, body, opts) => request("PUT", path, { ...opts, body }),
+  patch: (path, body, opts) => request("PATCH", path, { ...opts, body }),
   del: (path, opts) => request("DELETE", path, opts),
 };
 
@@ -95,4 +96,27 @@ export const uploadsApi = {
     fd.append("file", file);
     return api.post("/uploads", fd, { auth: true });
   },
+};
+
+// ── Blog / column posts ────────────────────────────────────────────────────
+// Public (no auth) — used by the /column pages and the home highlights.
+export const postsApi = {
+  list: ({ page = 1, category } = {}) => {
+    const qs = new URLSearchParams({ page: String(page) });
+    if (category) qs.set("category", category);
+    return api.get(`/posts?${qs.toString()}`);
+  },
+  latest: (limit = 3) => api.get(`/posts/latest?limit=${limit}`),
+  get: (slug) => api.get(`/posts/${encodeURIComponent(slug)}`),
+};
+
+// Admin (auth) — CRUD from the /admin/posts screens.
+export const adminPostsApi = {
+  list: () => api.get("/admin/posts", { auth: true }),
+  get: (id) => api.get(`/admin/posts/${id}`, { auth: true }),
+  create: (data) => api.post("/admin/posts", data, { auth: true }),
+  update: (id, data) => api.put(`/admin/posts/${id}`, data, { auth: true }),
+  setStatus: (id, status) =>
+    api.patch(`/admin/posts/${id}/status`, { status }, { auth: true }),
+  remove: (id) => api.del(`/admin/posts/${id}`, { auth: true }),
 };

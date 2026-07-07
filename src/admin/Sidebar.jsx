@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { schema, pageOrder } from "../../shared/content-schema.js";
 
 export default function Sidebar() {
@@ -14,6 +14,16 @@ export default function Sidebar() {
         </div>
       </div>
 
+      <Link
+        to="/admin/posts"
+        className="mx-3 mt-3 mb-1 block rounded-md bg-blue-600/90 px-4 py-2.5 text-center text-sm font-bold text-white transition hover:bg-blue-500"
+      >
+        ✎ 칼럼 관리 (블로그)
+      </Link>
+
+      <div className="px-5 pt-3 pb-1 text-[10px] uppercase tracking-wider text-slate-600">
+        페이지 콘텐츠
+      </div>
       <ul className="flex-1 overflow-y-auto py-2">
         {pageOrder.map((key) => (
           <li key={key}>
