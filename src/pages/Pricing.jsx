@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
-import { PageHero, CTABand, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { PageHero, FinalCta, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 const PackageGrid = ({ title, sectionLabels, packages }) => (
@@ -60,11 +60,7 @@ const Pricing = () => {
         </div>
       </section>
 
-      <CTABand
-        headline={'어떤 패키지가 맞을지\n고민되시나요?'}
-        subhead="목표와 예산을 알려주시면, 가장 효율적인 구성을 제안해 드립니다."
-        button="맞춤 견적 문의"
-      />
+      <FinalCta />
     </div>
   );
 };

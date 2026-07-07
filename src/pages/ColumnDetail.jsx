@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import SEO, { SITE_NAME, SITE_URL } from '../components/SEO';
-import { CTABand, fadeInUp } from '../components/common/ui.jsx';
+import { FinalCta, fadeInUp } from '../components/common/ui.jsx';
 import { postsApi } from '../lib/api.js';
 
 function fmtDate(iso) {
@@ -148,11 +148,7 @@ const ColumnDetail = () => {
         </motion.div>
       </article>
 
-      <CTABand
-        headline={'영상 제작이\n필요하신가요?'}
-        subhead="기획부터 마케팅까지, 유니버랩 미디어가 함께합니다."
-        button="문의하기"
-      />
+      <FinalCta />
     </div>
   );
 };

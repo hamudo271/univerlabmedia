@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
-import { PageHero, SectionHeader, CTABand, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { PageHero, SectionHeader, FinalCta, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 const FailureSection = () => {
@@ -100,11 +100,7 @@ const Service = () => {
       <FailureSection />
       <PrinciplesSection />
       <ProcessSection />
-      <CTABand
-        headline={'돈되는 유튜브,\n그 비결을 알고 싶으신가요?'}
-        subhead="유니버랩 미디어의 모든 연구 성과, 이제는 당신이 주인공이 될 차례입니다."
-        button="전문 상담 받기"
-      />
+      <FinalCta />
     </div>
   );
 };

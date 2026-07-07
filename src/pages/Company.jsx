@@ -2,13 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Target, Zap, Users, BarChart3, Sparkles } from 'lucide-react';
 import SEO from '../components/SEO';
-import { PageHero, SectionHeader, CTABand, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { PageHero, SectionHeader, FinalCta, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 const teamIcons = [Target, Zap, Users, BarChart3];
 
 const Company = () => {
-  const { seo, hero, whyObsessed, teamwork, team, cta } = useContent('company');
+  const { seo, hero, whyObsessed, teamwork, team } = useContent('company');
 
   const valueCards = [
     { title: whyObsessed.card1Title, strong: whyObsessed.card1Strong, body: whyObsessed.card1Body },
@@ -93,7 +93,7 @@ const Company = () => {
         </div>
       </section>
 
-      <CTABand headline={cta.headline} subhead={cta.subhead} button={cta.button} />
+      <FinalCta />
     </div>
   );
 };
