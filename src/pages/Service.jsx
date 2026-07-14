@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
-import { PageHero, SectionHeader, FinalCta, ServiceCards, fadeInUp, stagger } from '../components/common/ui.jsx';
+import { PageHero, SectionHeader, FinalCta, ServiceCards, ProcessTimeline, fadeInUp, stagger } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 const FailureSection = () => {
@@ -64,23 +64,8 @@ const ProcessSection = () => {
   return (
     <section className="border-b border-border-primary bg-bg-primary py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHeader eyebrow={process.eyebrow} headline={process.headline} accent="프로세스" />
-        <div className="relative ml-3 border-l border-border-primary pl-8 md:ml-5">
-          {process.steps.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.04 }}
-              className="relative pb-10 last:pb-0"
-            >
-              <span className="bg-brand-gradient absolute -left-[2.85rem] flex h-9 w-9 items-center justify-center rounded-full text-sm font-black text-white md:-left-[3.35rem]">
-                {item.step}
-              </span>
-              <h3 className="text-xl font-bold text-text-primary md:text-2xl">{item.title}</h3>
-              <p className="mt-2 leading-relaxed text-text-secondary">{item.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+        <SectionHeader eyebrow={process.eyebrow} headline={process.headline} accent="프로세스" center />
+        <ProcessTimeline steps={process.steps} />
       </div>
     </section>
   );

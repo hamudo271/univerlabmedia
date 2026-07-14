@@ -16,7 +16,7 @@ import SEO from '../components/SEO';
 import HeroSlider from '../components/home/HeroSlider.jsx';
 import ScarcityBar from '../components/home/ScarcityBar.jsx';
 import ColumnHighlights from '../components/home/ColumnHighlights.jsx';
-import { FinalCta, ServiceCards } from '../components/common/ui.jsx';
+import { FinalCta, ServiceCards, ProcessTimeline } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
 
 // ── Animation variants ──────────────────────────────────────────
@@ -446,29 +446,8 @@ const Process = () => {
         </div>
 
         {/* Horizontal timeline — scrolls on small screens, spans the row on large */}
-        <div className="mt-20 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <motion.div
-            variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="relative flex w-max gap-8 lg:w-full lg:gap-4"
-          >
-            {/* Connecting line running through the node centers */}
-            <div className="absolute left-10 right-10 top-10 h-0.5 bg-gradient-to-r from-accent-primary/20 via-accent-secondary/50 to-accent-primary/20" />
-            {process.steps.map((item, i) => (
-              <motion.div
-                key={item.step}
-                variants={fadeInUp}
-                className="group relative z-10 flex w-56 shrink-0 flex-col items-center text-center lg:w-auto lg:flex-1"
-              >
-                <span className="bg-brand-gradient ring-bg-primary mb-7 flex h-20 w-20 items-center justify-center rounded-full text-2xl font-black text-white shadow-lg shadow-accent-primary/30 ring-8 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h3 className="px-2 text-xl font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-primary md:text-2xl">
-                  {item.title}
-                </h3>
-                <p className="mt-3 px-1 text-base leading-relaxed text-text-secondary">{item.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+        <div className="mt-20">
+          <ProcessTimeline steps={process.steps} />
         </div>
 
         {/* CTA */}
