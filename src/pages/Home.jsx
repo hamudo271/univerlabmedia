@@ -417,52 +417,72 @@ const Safety = () => {
   );
 };
 
-// ── Process (sticky intro + numbered timeline) ──────────────────
+// ── Process (horizontal numbered timeline) ──────────────────────
 const Process = () => {
   const { process } = useContent('home');
   return (
     <section className="bg-bg-primary py-28">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
-        <div className="md:sticky md:top-32 md:self-start">
-          <span className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary">
+      <div className="mx-auto max-w-7xl px-6">
+        {/* Intro */}
+        <div className="mx-auto max-w-2xl text-center">
+          <motion.span
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
+            className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary"
+          >
             {process.eyebrow}
-          </span>
-          <h2 className="text-3xl font-black leading-tight tracking-tight text-text-primary md:text-5xl">
+          </motion.span>
+          <motion.h2
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
+            className="text-3xl font-black leading-tight tracking-tight text-text-primary md:text-5xl"
+          >
             고객 만족도를 최우선합니다
-          </h2>
-          <p className="mt-5 text-text-secondary">
+          </motion.h2>
+          <motion.p
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
+            className="mt-5 text-text-secondary"
+          >
             상담부터 완성까지, 유니버랩 미디어의 체계적인 7단계 작업 프로세스.
-          </p>
+          </motion.p>
+        </div>
+
+        {/* Horizontal timeline — scrolls on small screens, spans the row on large */}
+        <div className="mt-20 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <motion.div
+            variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="relative flex w-max gap-8 lg:w-full lg:gap-4"
+          >
+            {/* Connecting line running through the node centers */}
+            <div className="absolute left-10 right-10 top-10 h-0.5 bg-gradient-to-r from-accent-primary/20 via-accent-secondary/50 to-accent-primary/20" />
+            {process.steps.map((item, i) => (
+              <motion.div
+                key={item.step}
+                variants={fadeInUp}
+                className="group relative z-10 flex w-56 shrink-0 flex-col items-center text-center lg:w-auto lg:flex-1"
+              >
+                <span className="bg-brand-gradient ring-bg-primary mb-7 flex h-20 w-20 items-center justify-center rounded-full text-2xl font-black text-white shadow-lg shadow-accent-primary/30 ring-8 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="px-2 text-xl font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-primary md:text-2xl">
+                  {item.title}
+                </h3>
+                <p className="mt-3 px-1 text-base leading-relaxed text-text-secondary">{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* CTA */}
+        <motion.div
+          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
+          className="mt-16 text-center"
+        >
           <Link
             to="/contact"
-            className="bg-brand-gradient mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-bold text-white shadow-lg shadow-accent-primary/30 transition-transform hover:scale-105"
+            className="bg-brand-gradient inline-flex items-center gap-2 rounded-full px-8 py-4 font-bold text-white shadow-lg shadow-accent-primary/30 transition-transform hover:scale-105"
           >
             상담 신청하기 <ArrowRight size={18} />
           </Link>
-        </div>
-
-        <div className="space-y-4">
-          {process.steps.map((item, i) => (
-            <motion.div
-              key={item.step}
-              initial={{ opacity: 0, x: 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="group flex gap-5 rounded-2xl border border-border-primary bg-bg-secondary p-6 transition-colors hover:border-accent-primary"
-            >
-              <span className="bg-brand-gradient flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg font-black text-white">
-                {i + 1}
-              </span>
-              <div>
-                <h3 className="text-lg font-bold text-text-primary group-hover:text-accent-primary">
-                  {item.title}
-                </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">{item.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
