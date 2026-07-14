@@ -194,6 +194,39 @@ export const FinalCta = () => {
   );
 };
 
+/**
+ * Horizontal numbered process timeline — gradient nodes threaded on a
+ * connecting line, with each step's title and description below its node.
+ * Spans the row on large screens and scrolls sideways on narrow ones.
+ * Shared by the Home and Service process sections (step counts differ).
+ */
+export const ProcessTimeline = ({ steps }) => (
+  <div className="overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <motion.div
+      variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
+      className="relative flex w-max gap-8 lg:w-full lg:gap-4"
+    >
+      {/* Connecting line running through the node centers */}
+      <div className="absolute left-10 right-10 top-10 h-0.5 bg-gradient-to-r from-accent-primary/20 via-accent-secondary/50 to-accent-primary/20" />
+      {steps.map((item, i) => (
+        <motion.div
+          key={item.step ?? i}
+          variants={fadeInUp}
+          className="group relative z-10 flex w-56 shrink-0 flex-col items-center text-center lg:w-auto lg:flex-1"
+        >
+          <span className="bg-brand-gradient ring-bg-primary mb-7 flex h-20 w-20 shrink-0 items-center justify-center rounded-full text-2xl font-black text-white shadow-lg shadow-accent-primary/30 ring-8 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110">
+            {item.step ?? String(i + 1).padStart(2, '0')}
+          </span>
+          <h3 className="px-2 text-xl font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-primary md:text-2xl">
+            {item.title}
+          </h3>
+          <p className="mt-3 px-1 text-base leading-relaxed text-text-secondary">{item.desc}</p>
+        </motion.div>
+      ))}
+    </motion.div>
+  </div>
+);
+
 /** Hexagon logo watermark — echoes the UNIVER LAB brand mark. */
 const HexMark = ({ className = '' }) => (
   <svg viewBox="0 0 100 100" fill="none" className={className} aria-hidden>
