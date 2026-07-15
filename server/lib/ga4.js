@@ -87,6 +87,10 @@ async function getAccessToken() {
 
 // ── Property resolution ─────────────────────────────────────────────────────
 
+// The site's measurement id — used to pick the right property when the
+// service account can see several (e.g. account-level access).
+const MEASUREMENT_ID = process.env.GA4_MEASUREMENT_ID || "G-6T1VR34XHP";
+
 let discoveredProperty = null;
 
 async function resolveProperty(token) {
@@ -94,9 +98,8 @@ async function resolveProperty(token) {
   if (envId) return `properties/${String(envId).replace(/^properties\//, "")}`;
   if (discoveredProperty) return discoveredProperty;
 
-  const res = await fetch(`${ADMIN_API}/accountSummaries`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const headers = { Authorization: `Bearer ${token}` };
+  const res = await fetch(`${ADMIN_API}/accountSummaries?pageSize=200`, { headers });
   const data = await res.json();
   if (!res.ok) {
     const reason = data?.error?.details?.some((d) => d.reason === "SERVICE_DISABLED")
@@ -104,10 +107,39 @@ async function resolveProperty(token) {
       : "no-property-access";
     throw new GaError(reason, data?.error?.message);
   }
-  const prop = data.accountSummaries?.flatMap((a) => a.propertySummaries || [])[0];
-  if (!prop) throw new GaError("no-property-access", "서비스 계정이 접근 가능한 GA4 속성이 없습니다.");
-  discoveredProperty = prop.property; // "properties/123456789"
-  console.log(`[ga4] auto-discovered ${prop.property} (${prop.displayName})`);
+  const props = data.accountSummaries?.flatMap((a) => a.propertySummaries || []) || [];
+  if (!props.length) {
+    throw new GaError("no-property-access", "서비스 계정이 접근 가능한 GA4 속성이 없습니다.");
+  }
+
+  // Find the property whose web stream carries our measurement id.
+  let picked = props.length === 1 ? props[0] : null;
+  if (!picked) {
+    for (const p of props) {
+      try {
+        const sRes = await fetch(`${ADMIN_API}/${p.property}/dataStreams`, { headers });
+        const sData = await sRes.json();
+        const match = (sData.dataStreams || []).some(
+          (s) => s.webStreamData?.measurementId === MEASUREMENT_ID
+        );
+        if (match) {
+          picked = p;
+          break;
+        }
+      } catch {
+        /* try the next property */
+      }
+    }
+  }
+  if (!picked) {
+    const list = props.map((p) => `${p.displayName}(${p.property})`).join(", ");
+    throw new GaError(
+      "wrong-property",
+      `접근 가능한 속성 중 측정 ID ${MEASUREMENT_ID}를 쓰는 속성이 없습니다. 접근 가능: ${list}`
+    );
+  }
+  discoveredProperty = picked.property; // "properties/123456789"
+  console.log(`[ga4] auto-discovered ${picked.property} (${picked.displayName})`);
   return discoveredProperty;
 }
 

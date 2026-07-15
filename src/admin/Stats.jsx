@@ -214,6 +214,10 @@ function SetupGuide({ reason, detail }) {
       "GA4 → 관리 → 속성 액세스 관리에서 서비스 계정 이메일(…iam.gserviceaccount.com)을 '뷰어'로 추가하세요.",
       "GA4_PROPERTY_ID가 올바른 속성 번호인지 확인하세요.",
     ],
+    "wrong-property": [
+      "서비스 계정이 접근할 수 있는 속성 중에 이 사이트의 측정 ID를 쓰는 속성이 없습니다.",
+      "이 사이트가 속한 GA4 속성에 서비스 계정을 '뷰어'로 추가하거나, GA4_PROPERTY_ID 환경변수로 속성을 직접 지정하세요.",
+    ],
     "api-error": ["일시적인 오류일 수 있습니다. 잠시 후 다시 시도해 주세요."],
   };
   return (
