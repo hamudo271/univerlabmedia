@@ -15,6 +15,7 @@ import NotFound from './pages/NotFound';
 import SmoothScroll from './components/common/SmoothScroll';
 import ScrollToTop from './components/common/ScrollToTop';
 import TopProgressBar from './components/common/TopProgressBar';
+import Analytics from './components/common/Analytics';
 
 // Admin (incl. the Tiptap editor) is code-split so public visitors never
 // download it.
@@ -23,6 +24,7 @@ const AdminApp = lazy(() => import('./admin/AdminApp.jsx'));
 function PublicSite() {
   return (
     <SmoothScroll>
+      <Analytics />
       <ScrollToTop />
       <TopProgressBar />
       <Layout>
