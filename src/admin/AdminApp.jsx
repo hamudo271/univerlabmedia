@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate, useParams } from "react-router-do
 import Login from "./Login.jsx";
 import AdminLayout from "./AdminLayout.jsx";
 import PageEditor from "./PageEditor.jsx";
+import Stats from "./Stats.jsx";
 import PostsLayout from "./posts/PostsLayout.jsx";
 import PostList from "./posts/PostList.jsx";
 import PostEditor from "./posts/PostEditor.jsx";
@@ -80,6 +81,16 @@ export default function AdminApp() {
         element={
           <AdminLayout onLogout={logout}>
             <PageEditorRoute />
+          </AdminLayout>
+        }
+      />
+
+      {/* 방문자 통계 (GA4) */}
+      <Route
+        path="stats"
+        element={
+          <AdminLayout onLogout={logout}>
+            <Stats />
           </AdminLayout>
         }
       />

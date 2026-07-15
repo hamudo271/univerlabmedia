@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { FileText, PlusCircle, ExternalLink, LogOut, LayoutPanelLeft } from 'lucide-react';
+import { FileText, PlusCircle, ExternalLink, LogOut, LayoutPanelLeft, BarChart3 } from 'lucide-react';
 import { pageOrder } from '../../../shared/content-schema.js';
 
 function TabLink({ to, children }) {
@@ -35,6 +35,12 @@ export default function PostsLayout({ children, onLogout }) {
             </nav>
           </div>
           <div className="flex items-center gap-4">
+            <Link
+              to="/admin/stats"
+              className="text-sm text-text-secondary hover:text-accent-primary inline-flex items-center gap-1"
+            >
+              <BarChart3 size={14} /> 방문자 통계
+            </Link>
             <Link
               to={`/admin/pages/${pageOrder[0]}`}
               className="text-sm text-text-secondary hover:text-accent-primary inline-flex items-center gap-1"
