@@ -39,7 +39,7 @@ export default function Stats() {
   }
   if (!data.configured) return <SetupGuide reason={data.reason} detail={data.detail} />;
 
-  const { totals, daily, topPages, channels, realtime, cachedAt, stale } = data;
+  const { totals, daily, topPages, channels, realtime, cachedAt, stale, propertyId } = data;
 
   return (
     <div className="space-y-8">
@@ -48,6 +48,9 @@ export default function Stats() {
           <h1 className="text-2xl font-bold text-white">방문자 통계</h1>
           <p className="mt-1 text-sm text-slate-400">
             최근 28일 · GA4 기준 · 갱신 {fmtTime(cachedAt)}
+            {propertyId && (
+              <span className="ml-2 font-mono text-xs text-slate-500">속성 {propertyId}</span>
+            )}
             {stale && <span className="ml-2 text-amber-400">(일시적 오류 — 이전 데이터 표시 중)</span>}
           </p>
         </div>
