@@ -21,6 +21,19 @@ export default function Sidebar() {
         ✎ 칼럼 관리 (블로그)
       </Link>
 
+      <NavLink
+        to="/admin/stats"
+        className={({ isActive }) =>
+          `mx-3 mb-1 block rounded-md px-4 py-2.5 text-center text-sm font-bold transition ${
+            isActive
+              ? "bg-emerald-600 text-white"
+              : "bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/40"
+          }`
+        }
+      >
+        📊 방문자 통계
+      </NavLink>
+
       <div className="px-5 pt-3 pb-1 text-[10px] uppercase tracking-wider text-slate-600">
         페이지 콘텐츠
       </div>

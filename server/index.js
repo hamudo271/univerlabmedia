@@ -12,6 +12,7 @@ import uploadRoutes from "./routes/uploads.js";
 import contactRoutes from "./routes/contact.js";
 import postRoutes from "./routes/posts.js";
 import adminPostRoutes from "./routes/adminPosts.js";
+import adminStatsRoutes from "./routes/adminStats.js";
 import { errorHandler, apiNotFound } from "./middleware/errorHandler.js";
 import { UPLOAD_DIR } from "./lib/uploads.js";
 import { toPost } from "./lib/posts.js";
@@ -84,6 +85,7 @@ app.use("/api/uploads", uploadRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/admin/posts", adminPostRoutes);
+app.use("/api/admin/stats", adminStatsRoutes);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api", apiNotFound);
