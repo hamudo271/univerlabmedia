@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { readFileSync } from "node:fs";
+import { Buffer } from "node:buffer";
 
 /**
  * GA4 Data API client (service-account, REST — no SDK dependency).
@@ -30,26 +31,71 @@ const FORCE_COOLDOWN = 5 * 60 * 1000; // manual refresh at most every 5min
 
 let creds = null;
 let credsTried = false;
+// Why loading failed, so the dashboard can name the actual problem instead of
+// lumping "variable absent" together with "variable present but mangled".
+let credsFailure = null; // { reason, detail }
+
+/** Metadata safe to show in the UI — never any key material. */
+function describe(raw) {
+  const head = raw.trimStart().slice(0, 1);
+  return `길이 ${raw.length}자, 첫 글자 "${head}"`;
+}
 
 function loadCreds() {
   if (credsTried) return creds;
   credsTried = true;
+
+  const envJson = process.env.GA_SERVICE_ACCOUNT_JSON;
+  const envB64 = process.env.GA_SERVICE_ACCOUNT_BASE64;
+  const envFile = process.env.GA_SERVICE_ACCOUNT_FILE;
+
+  let raw = null;
   try {
-    const raw =
-      process.env.GA_SERVICE_ACCOUNT_JSON ||
-      (process.env.GA_SERVICE_ACCOUNT_FILE
-        ? readFileSync(process.env.GA_SERVICE_ACCOUNT_FILE, "utf8")
-        : null);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!parsed.client_email || !parsed.private_key || !parsed.token_uri) {
-      throw new Error("service-account JSON missing required fields");
+    if (envJson && envJson.trim()) {
+      raw = envJson;
+    } else if (envB64 && envB64.trim()) {
+      raw = Buffer.from(envB64.trim(), "base64").toString("utf8");
+    } else if (envFile) {
+      raw = readFileSync(envFile, "utf8");
     }
-    creds = parsed;
   } catch (err) {
-    console.error("[ga4] failed to load service-account credentials:", err.message);
-    creds = null;
+    credsFailure = { reason: "creds-unreadable", detail: err.message };
+    console.error("[ga4] cannot read credentials source:", err.message);
+    return null;
   }
+
+  if (!raw || !raw.trim()) {
+    credsFailure = { reason: "no-credentials" };
+    console.error(
+      "[ga4] GA_SERVICE_ACCOUNT_JSON / _BASE64 / _FILE are all empty — stats disabled."
+    );
+    return null;
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    credsFailure = {
+      reason: "creds-not-json",
+      detail: `${describe(raw)} — ${err.message}`,
+    };
+    console.error(`[ga4] credentials are not valid JSON (${describe(raw)}):`, err.message);
+    return null;
+  }
+
+  const missing = ["client_email", "private_key", "token_uri"].filter((k) => !parsed[k]);
+  if (missing.length) {
+    credsFailure = {
+      reason: "creds-incomplete",
+      detail: `누락된 필드: ${missing.join(", ")}`,
+    };
+    console.error("[ga4] service-account JSON missing fields:", missing.join(", "));
+    return null;
+  }
+
+  creds = parsed;
+  console.log(`[ga4] credentials loaded for ${parsed.client_email}`);
   return creds;
 }
 
@@ -278,7 +324,11 @@ export function gaConfigured() {
  */
 export async function getStats({ force = false } = {}) {
   if (!gaConfigured()) {
-    return { configured: false, reason: "no-credentials" };
+    return {
+      configured: false,
+      reason: credsFailure?.reason || "no-credentials",
+      detail: credsFailure?.detail,
+    };
   }
 
   const now = Date.now();
