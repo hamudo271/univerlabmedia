@@ -51,10 +51,12 @@ function loadCreds() {
 
   let raw = null;
   try {
+    // Take the value verbatim from whichever source is set; the encoding is
+    // normalised below rather than assumed from the variable name.
     if (envJson && envJson.trim()) {
       raw = envJson;
     } else if (envB64 && envB64.trim()) {
-      raw = Buffer.from(envB64.trim(), "base64").toString("utf8");
+      raw = envB64;
     } else if (envFile) {
       raw = readFileSync(envFile, "utf8");
     }
@@ -70,6 +72,21 @@ function loadCreds() {
       "[ga4] GA_SERVICE_ACCOUNT_JSON / _BASE64 / _FILE are all empty — stats disabled."
     );
     return null;
+  }
+
+  // The JSON and BASE64 variables are trivial to mix up, and the two encodings
+  // are unambiguous (service-account JSON always starts with '{'). So accept
+  // either form in either variable rather than making the operator match names.
+  if (!raw.trimStart().startsWith("{")) {
+    try {
+      const decoded = Buffer.from(raw.trim(), "base64").toString("utf8");
+      if (decoded.trimStart().startsWith("{")) {
+        console.log("[ga4] credentials were base64 — decoded automatically.");
+        raw = decoded;
+      }
+    } catch {
+      /* fall through to the JSON parse error below */
+    }
   }
 
   let parsed;
