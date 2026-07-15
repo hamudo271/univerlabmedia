@@ -202,9 +202,21 @@ function Table({ head, rows }) {
 function SetupGuide({ reason, detail }) {
   const steps = {
     "no-credentials": [
-      "Railway → Variables에 GA_SERVICE_ACCOUNT_JSON을 추가하세요 (서비스 계정 JSON 전체 내용).",
-      "GA4_PROPERTY_ID도 함께 추가하세요 (GA4 → 관리 → 속성 설정 → 속성 ID, 숫자).",
+      "서버에 GA_SERVICE_ACCOUNT_JSON 값이 비어 있습니다 (변수 자체가 안 보임).",
+      "Railway에서 변수 이름 철자를 확인하세요 — 정확히 GA_SERVICE_ACCOUNT_JSON 이어야 합니다.",
+      "변수를 올바른 서비스/환경(Production)에 넣었는지, 저장 후 재배포가 끝났는지 확인하세요.",
+      "값 붙여넣기가 자꾸 실패하면 GA_SERVICE_ACCOUNT_BASE64 (JSON을 base64로 인코딩한 값)로 넣어도 됩니다.",
     ],
+    "creds-not-json": [
+      "변수는 서버에 도달했지만 JSON 파싱에 실패했습니다 — 붙여넣다가 값이 잘리거나 깨진 상태입니다.",
+      "JSON 파일 전체({ 로 시작해 } 로 끝나는)를 그대로 붙여넣었는지 확인하세요.",
+      "권장: JSON을 base64로 인코딩해 GA_SERVICE_ACCOUNT_BASE64에 넣으면 줄바꿈 문제가 없습니다.",
+    ],
+    "creds-incomplete": [
+      "JSON은 읽혔지만 서비스 계정 키에 필요한 필드가 없습니다.",
+      "Google Cloud → 서비스 계정 → 키 → JSON으로 새로 발급받은 파일을 사용하세요.",
+    ],
+    "creds-unreadable": ["GA_SERVICE_ACCOUNT_FILE 경로의 파일을 읽지 못했습니다."],
     "bad-credentials": ["GA_SERVICE_ACCOUNT_JSON 값이 올바른 서비스 계정 JSON인지 확인하세요."],
     "admin-api-disabled": [
       "GA4_PROPERTY_ID 환경변수를 추가하면 바로 해결됩니다 (GA4 → 관리 → 속성 설정 → 속성 ID).",
