@@ -167,6 +167,65 @@ app.get("/sitemap.xml", async (_req, res, next) => {
   }
 });
 
+// --- SEO: RSS 2.0 feed of published column posts ---------------------------
+// Naver Search Advisor / Google can subscribe to this to pick up new posts
+// faster. Only PUBLISHED posts appear; an empty <channel> is valid when none.
+const xmlEscape = (s) =>
+  String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
+app.get("/rss.xml", async (_req, res, next) => {
+  try {
+    let items = [];
+    if (dbAvailable()) {
+      const { rows } = await pool.query(
+        `SELECT title, slug, excerpt, category, published_at, updated_at
+           FROM posts
+          WHERE status = 'PUBLISHED'
+          ORDER BY published_at DESC NULLS LAST
+          LIMIT 50`
+      );
+      items = rows.map((p) => {
+        const link = `${SITE_URL}/column/${encodeURIComponent(p.slug)}`;
+        const date = new Date(p.published_at || p.updated_at || Date.now());
+        return (
+          `    <item>\n` +
+          `      <title>${xmlEscape(p.title)}</title>\n` +
+          `      <link>${link}</link>\n` +
+          `      <guid isPermaLink="true">${link}</guid>\n` +
+          (p.category ? `      <category>${xmlEscape(p.category)}</category>\n` : "") +
+          `      <pubDate>${date.toUTCString()}</pubDate>\n` +
+          `      <description>${xmlEscape(p.excerpt)}</description>\n` +
+          `    </item>`
+        );
+      });
+    }
+
+    const lastBuild = new Date().toUTCString();
+    const xml =
+      `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n` +
+      `  <channel>\n` +
+      `    <title>유니버랩 미디어 칼럼</title>\n` +
+      `    <link>${SITE_URL}/column</link>\n` +
+      `    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />\n` +
+      `    <description>영상 기획·촬영·편집·마케팅 인사이트를 전하는 유니버랩 미디어 칼럼</description>\n` +
+      `    <language>ko</language>\n` +
+      `    <lastBuildDate>${lastBuild}</lastBuildDate>\n` +
+      (items.length ? items.join("\n") + "\n" : "") +
+      `  </channel>\n` +
+      `</rss>\n`;
+    res.set("Cache-Control", "public, max-age=3600");
+    return res.type("application/rss+xml").send(xml);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 // --- Static SPA ------------------------------------------------------------
 app.use(
   express.static(DIST, {
