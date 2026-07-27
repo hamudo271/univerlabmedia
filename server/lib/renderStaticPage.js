@@ -288,6 +288,14 @@ export function renderStaticPage(pathname, { content, updatedAt, global: globalC
       .filter(Boolean)
       .map((v) => `<span>${text(v)}</span>`)
       .join("") +
+    (f.channels ?? [])
+      .map(
+        (c) =>
+          `<a href="${attr(c.url)}" rel="noopener noreferrer">${text(
+            c.name
+          )}</a>`
+      )
+      .join("") +
     `</address>`;
 
   const body =

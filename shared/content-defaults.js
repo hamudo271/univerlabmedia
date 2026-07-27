@@ -1048,6 +1048,16 @@ export const defaults = {
       infoLabel: "Info",
       businessName: "상호명: 유니버랩미디어 | 대표: 곽 현 수",
       businessNumber: "사업자 등록 번호: 659-03-03533",
+      // Owned channels. Rendered in the footer and mirrored into the
+      // LocalBusiness `sameAs` in index.html — keep the two in sync.
+      channelsLabel: "Channels",
+      channels: [
+        {
+          name: "네이버 플레이스",
+          url: "https://map.naver.com/p/entry/place/2068352662",
+        },
+        { name: "네이버 블로그", url: "https://blog.naver.com/univerlabmedia" },
+      ],
       copyright: "Copyright ⓒ 2024 UNIVERLAB MEDIA. All Rights Reserved.",
       termsLink: "Terms of Use",
       termsPath: "/policy",
