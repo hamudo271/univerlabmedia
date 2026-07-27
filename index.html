@@ -54,17 +54,24 @@
     <meta name="twitter:description" content="영상 기획·촬영·편집·마케팅을 하나의 프로세스로 제공하는 영상 제작 전문 에이전시." />
     <meta name="twitter:image" content="https://univerlabmedia.co.kr/og-image.png" />
 
-    <!-- JSON-LD: Organization -->
+    <!-- JSON-LD: LocalBusiness (a subtype of Organization, so this stays the
+         single company entity while adding the local-search signals) -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Organization",
+        "@type": "ProfessionalService",
+        "@id": "https://univerlabmedia.co.kr/#organization",
         "name": "유니버랩 미디어",
-        "alternateName": "UNIVERLAB MEDIA",
+        "alternateName": ["UNIVERLAB MEDIA", "유니버랩미디어"],
+        "legalName": "유니버랩미디어",
         "url": "https://univerlabmedia.co.kr",
         "logo": "https://univerlabmedia.co.kr/brand/favicon.png",
         "image": "https://univerlabmedia.co.kr/og-image.png",
         "description": "영상 기획·촬영·편집·마케팅을 하나의 프로세스로 제공하는 영상 제작 전문 에이전시",
+        "founder": { "@type": "Person", "name": "곽현수" },
+        "taxID": "659-03-03533",
+        "telephone": "+82-10-9752-2358",
+        "email": "contact@univerlabmedia.co.kr",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "광나루로22길 16-3, 302호(화양동)",
@@ -72,6 +79,8 @@
           "addressRegion": "서울",
           "addressCountry": "KR"
         },
+        "areaServed": { "@type": "Country", "name": "대한민국" },
+        "knowsLanguage": "ko",
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+82-10-9752-2358",
@@ -79,7 +88,13 @@
           "email": "contact@univerlabmedia.co.kr",
           "areaServed": "KR",
           "availableLanguage": ["Korean"]
-        }
+        },
+        "makesOffer": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "프리미엄 유튜브 패키지" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "숏폼 영상 제작" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "전문 영상 편집" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "올인원 영상 제작" } }
+        ]
       }
     </script>
     <!-- JSON-LD: WebSite -->

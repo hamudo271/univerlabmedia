@@ -10,6 +10,7 @@ import Column from './pages/Column';
 import ColumnDetail from './pages/ColumnDetail';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
+import { Policy, Privacy } from './pages/Legal';
 import NotFound from './pages/NotFound';
 
 import SmoothScroll from './components/common/SmoothScroll';
@@ -40,6 +41,10 @@ function PublicSite() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/column" element={<Column />} />
           <Route path="/column/:slug" element={<ColumnDetail />} />
+          {/* Linked from the footer on every page — without these they were
+              soft 404s (NotFound rendered under a 200). */}
+          <Route path="/policy" element={<Policy />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

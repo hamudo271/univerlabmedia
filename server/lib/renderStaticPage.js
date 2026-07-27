@@ -24,15 +24,51 @@ const SITE_NAME = "유니버랩 미디어";
 // evergreen pages; dateModified comes from the CMS row's updated_at.
 const SITE_PUBLISHED = "2026-06-28T00:00:00+09:00";
 
-/** Routes rendered from a single content key. Order drives the footer nav. */
+/** Routes rendered from a single content key. `nav` ones are cross-linked. */
 const ROUTES = {
-  "/": { key: "home", type: "WebPage", name: "홈" },
-  "/company": { key: "company", type: "AboutPage", name: "회사 소개" },
-  "/service": { key: "service", type: "WebPage", name: "서비스 소개" },
-  "/portfolio": { key: "portfolio", type: "CollectionPage", name: "제작 사례" },
-  "/column": { key: "column", type: "CollectionPage", name: "칼럼" },
-  "/pricing": { key: "pricing", type: "WebPage", name: "가격 안내" },
-  "/contact": { key: "contact", type: "ContactPage", name: "문의하기" },
+  "/": { key: "home", type: "WebPage", name: "홈", nav: true },
+  "/company": { key: "company", type: "AboutPage", name: "회사 소개", nav: true },
+  "/service": { key: "service", type: "WebPage", name: "서비스 소개", nav: true },
+  "/portfolio": {
+    key: "portfolio",
+    type: "CollectionPage",
+    name: "제작 사례",
+    nav: true,
+  },
+  "/column": {
+    key: "column",
+    type: "CollectionPage",
+    name: "칼럼",
+    nav: true,
+  },
+  "/pricing": { key: "pricing", type: "WebPage", name: "가격 안내", nav: true },
+  "/contact": {
+    key: "contact",
+    type: "ContactPage",
+    name: "문의하기",
+    nav: true,
+  },
+  // Legal pages have no CMS blob; their copy lives in src/pages/Legal.jsx.
+  "/policy": {
+    key: "global",
+    type: "WebPage",
+    name: "이용약관",
+    seo: {
+      title: "이용약관",
+      description:
+        "유니버랩 미디어 웹사이트 및 영상 제작 서비스 이용약관입니다.",
+    },
+  },
+  "/privacy": {
+    key: "global",
+    type: "WebPage",
+    name: "개인정보처리방침",
+    seo: {
+      title: "개인정보처리방침",
+      description:
+        "유니버랩 미디어가 수집하는 개인정보의 항목, 이용 목적, 보유 기간 및 정보주체의 권리를 안내합니다.",
+    },
+  },
 };
 
 /** Content key a route needs loaded from the CMS, or null if not ours. */
@@ -117,13 +153,15 @@ function pageFor(pathname, content) {
   const route = ROUTES[pathname];
   if (!route) return null;
   const blob = content || defaults[route.key] || {};
-  const seo = blob.seo || defaults[route.key]?.seo || {};
+  // Routes carrying their own seo (the legal pages) have no CMS copy to
+  // harvest, so the prerender is just their heading plus the shared NAP.
+  const seo = route.seo || blob.seo || defaults[route.key]?.seo || {};
   return {
     name: route.name,
     type: route.type,
     title: seo.title || route.name,
     description: seo.description || "",
-    source: blob,
+    source: route.seo ? {} : blob,
     breadcrumb: [],
   };
 }
@@ -271,8 +309,10 @@ export function renderStaticPage(pathname, { content, updatedAt, global: globalC
       .join("") +
     `<nav>` +
     Object.entries(ROUTES)
+      .filter(([, r]) => r.nav)
       .map(([p, r]) => `<a href="${attr(p)}">${text(r.name)}</a>`)
       .join("") +
+    `<a href="/policy">이용약관</a><a href="/privacy">개인정보처리방침</a>` +
     `</nav>` +
     nap +
     `</article>`;
