@@ -242,18 +242,23 @@ app.get(/^(?!\/api\/|\/uploads\/).*/, async (req, res, next) => {
 
     let content = null;
     let updatedAt = null;
+    let globalContent = null;
     if (dbAvailable()) {
+      // `global` carries the footer NAP the prerender repeats on every page.
       const { rows } = await pool.query(
-        "SELECT value, updated_at FROM content_entries WHERE key = $1",
-        [key]
+        "SELECT key, value, updated_at FROM content_entries WHERE key = ANY($1)",
+        [[key, "global"]]
       );
-      if (rows[0]) {
-        content = rows[0].value;
-        updatedAt = rows[0].updated_at;
+      for (const row of rows) {
+        if (row.key === "global") globalContent = row.value;
+        if (row.key === key) {
+          content = row.value;
+          updatedAt = row.updated_at;
+        }
       }
     }
 
-    const html = renderStaticPage(req.path, { content, updatedAt });
+    const html = renderStaticPage(req.path, { content, updatedAt, global: globalContent });
     if (!html) return next();
     res.set("Cache-Control", "public, max-age=300");
     return res.type("html").send(html);
