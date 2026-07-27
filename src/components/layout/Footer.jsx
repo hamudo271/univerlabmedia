@@ -16,6 +16,9 @@ const Footer = () => {
     infoLabel,
     businessName,
     businessNumber,
+    channelsLabel,
+    // Older CMS rows predate this field, so fall back to an empty list.
+    channels = [],
     copyright,
     termsLink,
     termsPath,
@@ -47,7 +50,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-xs border-t border-border-primary pt-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-xs border-t border-border-primary pt-8">
           <div className="space-y-2">
             <strong className="text-text-primary block uppercase tracking-wider mb-2">{addressLabel}</strong>
             <p>{address}</p>
@@ -62,6 +65,23 @@ const Footer = () => {
             <p>{businessName}</p>
             <p>{businessNumber}</p>
           </div>
+          {channels.length > 0 && (
+            <div className="space-y-2">
+              <strong className="text-text-primary block uppercase tracking-wider mb-2">{channelsLabel}</strong>
+              {channels.map((c) => (
+                <p key={c.url}>
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-text-primary transition-colors"
+                  >
+                    {c.name}
+                  </a>
+                </p>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="mt-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-secondary/60">
