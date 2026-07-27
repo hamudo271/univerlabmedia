@@ -132,7 +132,7 @@ function pageFor(pathname, content) {
  * Returns the HTML for a static route, or null when the route is not ours or
  * the built template is unavailable (so the caller falls through to the SPA).
  */
-export function renderStaticPage(pathname, { content, updatedAt } = {}) {
+export function renderStaticPage(pathname, { content, updatedAt, global: globalContent } = {}) {
   let html = template();
   if (!html) return null;
 
@@ -240,6 +240,18 @@ export function renderStaticPage(pathname, { content, updatedAt } = {}) {
   // copy-only pages have none of their own, so fall back to the OG image.
   if (!out.images.length) out.images.push({ src: "/og-image.png", alt: page.title });
 
+  // Name/address/phone, repeated on every page exactly as the real footer
+  // renders it. Local-search crawlers score NAP consistency off the page text,
+  // so the prerender has to carry it too or the pages read as NAP-less.
+  const f = (globalContent || defaults.global)?.footer || {};
+  const nap =
+    `<address>` +
+    [f.businessName, f.address, f.phone, f.email]
+      .filter(Boolean)
+      .map((v) => `<span>${text(v)}</span>`)
+      .join("") +
+    `</address>`;
+
   const body =
     `<article>` +
     `<h1>${text(page.title)}</h1>` +
@@ -247,10 +259,14 @@ export function renderStaticPage(pathname, { content, updatedAt } = {}) {
     out.blocks
       .map((b) => `<${b.tag}>${text(b.s)}</${b.tag}>`)
       .join("") +
+    // Lazy so these never compete with the real hero for bandwidth — crawlers
+    // read the markup, browsers throw the whole subtree away on mount anyway.
     out.images
       .map(
         (im) =>
-          `<img src="${attr(im.src)}" alt="${attr(im.alt || page.title)}" />`
+          `<img src="${attr(im.src)}" alt="${attr(
+            im.alt || page.title
+          )}" loading="lazy" decoding="async" width="320" height="180" />`
       )
       .join("") +
     `<nav>` +
@@ -258,8 +274,20 @@ export function renderStaticPage(pathname, { content, updatedAt } = {}) {
       .map(([p, r]) => `<a href="${attr(p)}">${text(r.name)}</a>`)
       .join("") +
     `</nav>` +
+    nap +
     `</article>`;
 
-  html = html.replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+  // Take the prerender out of the layout entirely. Painting it and then having
+  // React replace it a full bundle-load later shifted the page hard (CLS went
+  // 0 -> 0.73 when this shipped visible). Clipped instead of display:none so
+  // the text stays in the accessibility/extraction path for non-JS crawlers.
+  const hidden =
+    "position:absolute;width:1px;height:1px;margin:-1px;padding:0;" +
+    "overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0";
+
+  html = html.replace(
+    '<div id="root"></div>',
+    `<div id="root"><div style="${hidden}">${body}</div></div>`
+  );
   return html;
 }
