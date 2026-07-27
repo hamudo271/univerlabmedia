@@ -22,6 +22,7 @@ import {
   contentKeyForPath,
 } from "./lib/renderStaticPage.js";
 import { defaults } from "../shared/content-defaults.js";
+import { mergeContent } from "./lib/mergeContent.js";
 
 const SITE_URL = "https://univerlabmedia.co.kr";
 
@@ -252,9 +253,11 @@ app.get(/^(?!\/api\/|\/uploads\/).*/, async (req, res, next) => {
         [[key, "global"]]
       );
       for (const row of rows) {
-        if (row.key === "global") globalContent = row.value;
+        if (row.key === "global") {
+          globalContent = mergeContent(defaults.global, row.value);
+        }
         if (row.key === key) {
-          content = row.value;
+          content = mergeContent(defaults[key], row.value);
           updatedAt = row.updated_at;
         }
       }

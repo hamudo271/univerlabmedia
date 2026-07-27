@@ -2,6 +2,7 @@ import { Router } from "express";
 import { pool, dbAvailable } from "../db.js";
 import { authRequired } from "../middleware/authRequired.js";
 import { defaults } from "../../shared/content-defaults.js";
+import { mergeContent } from "../lib/mergeContent.js";
 
 const router = Router();
 
@@ -18,7 +19,7 @@ router.get("/", async (_req, res, next) => {
       "SELECT key, value FROM content_entries"
     );
     const out = { ...defaults };
-    for (const row of rows) out[row.key] = row.value;
+    for (const row of rows) out[row.key] = mergeContent(defaults[row.key], row.value);
     res.json(out);
   } catch (err) {
     next(err);
@@ -44,7 +45,11 @@ router.get("/:key", async (req, res, next) => {
       if (defaults[key]) return res.json({ key, value: defaults[key] });
       return res.status(404).json({ error: "Not found" });
     }
-    res.json({ key, value: rows[0].value, updatedAt: rows[0].updated_at });
+    res.json({
+      key,
+      value: mergeContent(defaults[key], rows[0].value),
+      updatedAt: rows[0].updated_at,
+    });
   } catch (err) {
     next(err);
   }
