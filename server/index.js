@@ -17,6 +17,10 @@ import { errorHandler, apiNotFound } from "./middleware/errorHandler.js";
 import { UPLOAD_DIR } from "./lib/uploads.js";
 import { toPost } from "./lib/posts.js";
 import { renderColumnPost } from "./lib/renderColumnPost.js";
+import {
+  renderStaticPage,
+  contentKeyForPath,
+} from "./lib/renderStaticPage.js";
 import { defaults } from "../shared/content-defaults.js";
 
 const SITE_URL = "https://univerlabmedia.co.kr";
@@ -221,6 +225,38 @@ app.get("/rss.xml", async (_req, res, next) => {
       `</rss>\n`;
     res.set("Cache-Control", "public, max-age=3600");
     return res.type("application/rss+xml").send(xml);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// --- SEO: server-injected meta + copy for the static marketing pages -------
+// The built shell carries one hard-coded title/description and a canonical
+// pointing at `/`, so crawlers that don't run JS saw every route as an empty
+// duplicate of the homepage. Rewrite the shell per route; fall through to the
+// plain SPA for anything this doesn't own (assets, /admin, unknown paths).
+app.get(/^(?!\/api\/|\/uploads\/).*/, async (req, res, next) => {
+  try {
+    const key = contentKeyForPath(req.path);
+    if (!key) return next();
+
+    let content = null;
+    let updatedAt = null;
+    if (dbAvailable()) {
+      const { rows } = await pool.query(
+        "SELECT value, updated_at FROM content_entries WHERE key = $1",
+        [key]
+      );
+      if (rows[0]) {
+        content = rows[0].value;
+        updatedAt = rows[0].updated_at;
+      }
+    }
+
+    const html = renderStaticPage(req.path, { content, updatedAt });
+    if (!html) return next();
+    res.set("Cache-Control", "public, max-age=300");
+    return res.type("html").send(html);
   } catch (err) {
     return next(err);
   }

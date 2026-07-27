@@ -12,6 +12,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { attr, text, jsonForScript } from "./html.js";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_HTML = path.join(__dirname, "..", "..", "dist", "index.html");
 const SITE_URL = "https://univerlabmedia.co.kr";
@@ -26,33 +28,6 @@ function template() {
     templateCache = "";
   }
   return templateCache;
-}
-
-/** Escape text for use inside an HTML attribute value. */
-function attr(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-/** Escape text for HTML text content. */
-function text(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-/** Make a JS object safe to embed inside a <script> tag. */
-function jsonForScript(obj) {
-  return JSON.stringify(obj)
-    .replace(/</g, "\\u003c")
-    .replace(/>/g, "\\u003e")
-    .replace(/&/g, "\\u0026")
-    .replace(/\u2028/g, "\\u2028")
-    .replace(/\u2029/g, "\\u2029");
 }
 
 function fmtDate(iso) {
