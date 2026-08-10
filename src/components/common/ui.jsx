@@ -29,7 +29,7 @@ export const Accented = ({ text = '', accent }) => {
 
 /** Premium full-width page hero with grid + brand glow. */
 export const PageHero = ({ eyebrow, title, accent, subhead }) => (
-  <section className="relative overflow-hidden border-b border-border-primary bg-bg-primary pb-24 pt-44">
+  <section className="relative overflow-hidden border-b border-border-primary bg-bg-primary pb-16 pt-32 md:pb-24 md:pt-44">
     <div className="bg-grid absolute inset-0 opacity-40" />
     <div className="glow-accent absolute inset-0" style={{ '--gx': '12%', '--gy': '0%' }} />
     <div className="relative z-10 mx-auto max-w-7xl px-6">
@@ -62,7 +62,7 @@ export const PageHero = ({ eyebrow, title, accent, subhead }) => (
 
 /** Section heading block. */
 export const SectionHeader = ({ eyebrow, headline, accent, subhead, center }) => (
-  <div className={`mb-16 ${center ? 'text-center' : ''}`}>
+  <div className={`mb-10 md:mb-16 ${center ? 'text-center' : ''}`}>
     {eyebrow && (
       <motion.span
         initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
@@ -112,7 +112,7 @@ export const CtaVideoBg = ({ src = '/footer%20background%20video.mp4' }) => (
 
 /** Dark CTA band with brand-gradient button (video background). */
 export const CTABand = ({ headline, subhead, button, to = '/contact' }) => (
-  <section className="relative overflow-hidden bg-black py-28">
+  <section className="relative overflow-hidden bg-black py-16 md:py-28">
     <CtaVideoBg />
     <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
       <motion.h2
@@ -148,7 +148,7 @@ export const CTABand = ({ headline, subhead, button, to = '/contact' }) => (
 export const FinalCta = () => {
   const { finalCta } = useContent('home');
   return (
-    <section className="relative overflow-hidden bg-black py-32">
+    <section className="relative overflow-hidden bg-black py-20 md:py-32">
       <CtaVideoBg />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <motion.span
@@ -217,7 +217,9 @@ export const ProcessTimeline = ({ steps }) => (
           <span className="bg-brand-gradient ring-bg-primary mb-7 flex h-20 w-20 shrink-0 items-center justify-center rounded-full text-2xl font-black text-white shadow-lg shadow-accent-primary/30 ring-8 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110">
             {item.step ?? String(i + 1).padStart(2, '0')}
           </span>
-          <h3 className="px-2 text-xl font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-primary md:text-2xl">
+          {/* Fixed title slot keeps every step's description on one baseline,
+              whether the title wraps to one line or two. */}
+          <h3 className="flex min-h-[2.8em] items-start justify-center px-2 text-xl font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-primary md:text-2xl">
             {item.title}
           </h3>
           <p className="mt-3 px-1 text-base leading-relaxed text-text-secondary">{item.desc}</p>
@@ -245,7 +247,7 @@ export const ServiceCards = ({ withMore = false }) => {
   const { services } = useContent('serviceDetail');
   const items = services.items;
   return (
-    <section className="border-y border-border-primary bg-bg-secondary py-28">
+    <section className="border-y border-border-primary bg-bg-secondary py-16 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader eyebrow="Services" headline={'서비스를\n소개합니다'} accent="소개" center />
         <motion.div
@@ -256,17 +258,24 @@ export const ServiceCards = ({ withMore = false }) => {
             <motion.div key={s.id} variants={fadeInUp} whileHover={{ y: -8 }}>
               <Link
                 to={`/service/${s.id}`}
-                className="bg-brand-gradient group relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-3xl p-7 shadow-lg shadow-black/5 transition-shadow hover:shadow-2xl hover:shadow-accent-primary/25"
+                className="group relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-3xl bg-[#0b1020] p-7 shadow-lg shadow-black/10 transition-shadow hover:shadow-2xl hover:shadow-accent-primary/25"
               >
-                {/* progressive darkening — bright brand → deep navy across the row */}
-                <div className="absolute inset-0" style={{ backgroundColor: `rgba(9, 14, 40, ${0.06 + i * 0.17})` }} />
-                <HexMark className="absolute -right-4 -top-4 h-28 w-28 text-white/15 transition-transform duration-500 group-hover:rotate-12" />
-                <span className="relative z-10 text-xs font-semibold uppercase tracking-[0.15em] text-white/70">
+                {/* corner glow — the only brand-gradient moment on the card,
+                    drifting deeper across the row */}
+                <div
+                  className="absolute -right-14 -top-14 h-64 w-64 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-125"
+                  style={{
+                    background: `radial-gradient(circle, color-mix(in srgb, var(--accent-primary) ${62 - i * 11}%, transparent), color-mix(in srgb, var(--accent-secondary) ${44 - i * 8}%, transparent) 55%, transparent 76%)`,
+                  }}
+                />
+                <HexMark className="absolute -right-4 -top-4 h-28 w-28 text-white/10 transition-transform duration-500 group-hover:rotate-12" />
+                <span className="relative z-10 text-xs font-semibold uppercase tracking-[0.15em] text-white/60">
                   {s.subtitle}
                 </span>
                 <div className="relative z-10">
+                  <span className="mb-3 block h-px w-8 bg-accent-soft/70 transition-all duration-300 group-hover:w-14" />
                   <h3 className="text-2xl font-black leading-snug text-white">{s.title}</h3>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-white/90 transition-transform group-hover:translate-x-1">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-white/80 transition-all group-hover:translate-x-1 group-hover:text-white">
                     자세히 보기 <ArrowRight size={15} />
                   </span>
                 </div>

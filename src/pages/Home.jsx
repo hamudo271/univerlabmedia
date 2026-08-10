@@ -43,7 +43,7 @@ const Accented = ({ text, accent }) => {
 };
 
 const SectionHeader = ({ eyebrow, headline, accent, subhead, center }) => (
-  <div className={`mb-16 ${center ? 'text-center' : ''}`}>
+  <div className={`mb-10 md:mb-16 ${center ? 'text-center' : ''}`}>
     {eyebrow && (
       <motion.span
         initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
@@ -73,7 +73,7 @@ const SectionHeader = ({ eyebrow, headline, accent, subhead, center }) => (
 const BrandIntro = () => {
   const { brandIntro } = useContent('home');
   return (
-    <section className="relative overflow-hidden border-y border-border-primary bg-bg-primary py-32">
+    <section className="relative overflow-hidden border-y border-border-primary bg-bg-primary py-20 md:py-32">
       <div className="bg-grid absolute inset-0 opacity-40" />
       <div className="glow-accent absolute inset-0" style={{ '--gx': '20%', '--gy': '10%' }} />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
@@ -98,7 +98,7 @@ const BrandIntro = () => {
 
         <motion.div
           variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
-          className="mt-20 grid grid-cols-2 gap-6 md:grid-cols-4"
+          className="mt-12 grid grid-cols-2 gap-4 md:mt-20 md:gap-6 lg:grid-cols-4"
         >
           {brandIntro.stats.map((s, i) => (
             <motion.div
@@ -119,7 +119,7 @@ const BrandIntro = () => {
 const Cases = ({ onPlay }) => {
   const { cases } = useContent('home');
   return (
-    <section className="bg-bg-secondary py-28">
+    <section className="bg-bg-secondary py-16 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow={cases.eyebrow} headline={cases.headline} accent={cases.accent} subhead={cases.subhead}
@@ -167,9 +167,9 @@ const Cases = ({ onPlay }) => {
 const Partners = () => {
   const { partners } = useContent('home');
   return (
-    <section className="border-b border-border-primary bg-bg-primary py-28 md:py-32">
+    <section className="border-b border-border-primary bg-bg-primary py-16 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-20 text-center">
+        <div className="mb-12 text-center md:mb-20">
           <motion.span
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
             className="mb-3 block text-xs font-bold uppercase tracking-[0.25em] text-accent-primary"
@@ -188,12 +188,14 @@ const Partners = () => {
           className="grid grid-cols-2 gap-x-8 gap-y-14 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
         >
           {partners.items.map((p, i) => (
-            <motion.div key={i} variants={fadeInUp} className="flex h-16 items-center justify-center">
+            <motion.div key={i} variants={fadeInUp} className="flex h-14 items-center justify-center">
+              {/* Trimmed assets + fixed height + multiply blend = uniform optical
+                  weight even for logos with baked-in white backgrounds. */}
               <img
                 src={p.src}
                 alt={p.name}
                 loading="lazy"
-                className="max-h-11 w-auto max-w-[140px] object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 dark:opacity-50 dark:invert dark:hover:opacity-100 dark:hover:invert-0"
+                className="h-7 w-auto max-w-[150px] object-contain opacity-55 grayscale mix-blend-multiply transition-all duration-300 hover:opacity-100 hover:grayscale-0 md:h-8"
               />
             </motion.div>
           ))}
@@ -213,7 +215,7 @@ const Testimonials = () => {
   const shown = items.slice(page * perPage, page * perPage + perPage);
 
   return (
-    <section className="relative overflow-hidden border-y border-border-primary bg-bg-secondary py-28">
+    <section className="relative overflow-hidden border-y border-border-primary bg-bg-secondary py-16 md:py-28">
       <div className="glow-accent absolute inset-0" style={{ '--gx': '80%', '--gy': '0%' }} />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <SectionHeader
@@ -265,7 +267,7 @@ const Testimonials = () => {
                 onClick={() => setPage(i)}
                 aria-label={`후기 페이지 ${i + 1}`}
                 className={`h-2 rounded-full transition-all ${
-                  i === page ? 'bg-brand-gradient w-8' : 'w-2 bg-border-primary'
+                  i === page ? 'w-8 bg-accent-primary' : 'w-2 bg-border-primary'
                 }`}
               />
             ))}
@@ -276,56 +278,211 @@ const Testimonials = () => {
   );
 };
 
-// ── Stylized browser mockup for growth steps ────────────────────
-const Mockup = ({ variant }) => (
+// ── Stylized browser mockups for growth steps ───────────────────
+// Each step gets its own scene so the section reads as five distinct
+// proofs instead of one repeated placeholder chart.
+
+/** Shared browser-chrome shell. */
+const MockShell = ({ label, children }) => (
   <div className="relative w-full overflow-hidden rounded-2xl border border-border-primary bg-bg-elevated shadow-xl">
     <div className="flex items-center gap-1.5 border-b border-border-primary bg-bg-secondary px-4 py-3">
       <span className="h-3 w-3 rounded-full bg-red-400/80" />
       <span className="h-3 w-3 rounded-full bg-amber-400/80" />
       <span className="h-3 w-3 rounded-full bg-green-400/80" />
-    </div>
-    <div className="space-y-3 p-6">
-      {variant === 'chart' ? (
-        <>
-          <div className="flex items-end gap-2">
-            {[40, 65, 50, 80, 95, 70, 100].map((h, i) => (
-              <motion.div
-                key={i}
-                initial={{ height: 0 }} whileInView={{ height: `${h}px` }} viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.05 }}
-                className="flex-1 rounded-t bg-gradient-to-t from-accent-primary/30 to-accent-primary"
-              />
-            ))}
-          </div>
-          <div className="h-2 w-2/3 rounded-full bg-border-primary" />
-          <div className="h-2 w-1/2 rounded-full bg-border-primary" />
-        </>
-      ) : (
-        <>
-          <div className="h-24 rounded-lg bg-gradient-to-br from-accent-primary/20 to-purple-500/10" />
-          <div className="grid grid-cols-3 gap-2">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="h-10 rounded-md bg-border-primary/60" />
-            ))}
-          </div>
-          <div className="h-2 w-3/4 rounded-full bg-border-primary" />
-          <div className="h-2 w-1/2 rounded-full bg-border-primary" />
-        </>
+      {label && (
+        <span className="ml-3 rounded-md bg-bg-primary px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-text-secondary">
+          {label}
+        </span>
       )}
     </div>
+    <div className="p-6">{children}</div>
   </div>
 );
+
+/** Step 1 — 직접 운영 채널 대시보드 (11만 / 3만 / 1만). */
+const MockChannels = () => (
+  <MockShell label="Channel Dashboard">
+    <div className="space-y-3">
+      {[
+        { subs: '11만', w: 'w-full' },
+        { subs: '3만', w: 'w-2/3' },
+        { subs: '1만', w: 'w-2/5' },
+      ].map((c, i) => (
+        <div key={i} className="flex items-center gap-4 rounded-xl border border-border-primary bg-bg-secondary/60 px-4 py-3.5">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-primary/12 text-[11px] font-black text-accent-primary">
+            CH
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="h-2 w-24 rounded-full bg-border-primary" />
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-border-primary/50">
+              <motion.div
+                initial={{ width: 0 }} whileInView={{ width: '100%' }} viewport={{ once: true }}
+                transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                className={`h-full rounded-full bg-accent-primary/70 ${c.w}`}
+              />
+            </div>
+          </div>
+          <div className="shrink-0 text-right">
+            <div className="text-sm font-black tabular-nums text-text-primary">{c.subs}</div>
+            <div className="text-[10px] font-bold text-emerald-500">▲ 구독자</div>
+          </div>
+        </div>
+      ))}
+      <p className="pt-1 text-center text-[11px] font-semibold text-text-secondary">
+        유니버랩이 직접 운영하는 채널
+      </p>
+    </div>
+  </MockShell>
+);
+
+/** Step 2 — 영상별 목적이 정의된 기획안. */
+const MockObjective = () => (
+  <MockShell label="기획안 — 영상의 목적">
+    <div className="mb-4 flex flex-wrap gap-2">
+      {['구독 전환', '브랜딩', '상품 노출', '시청 지속'].map((t, i) => (
+        <motion.span
+          key={t}
+          initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
+          className={`rounded-full px-3 py-1 text-[11px] font-bold ${
+            i === 0
+              ? 'bg-accent-primary text-white'
+              : 'border border-border-primary text-text-secondary'
+          }`}
+        >
+          {t}
+        </motion.span>
+      ))}
+    </div>
+    <div className="space-y-2.5">
+      <div className="h-2 w-5/6 rounded-full bg-border-primary" />
+      <div className="h-2 w-2/3 rounded-full bg-border-primary" />
+      <div className="rounded-lg border-l-2 border-accent-primary bg-accent-primary/8 px-3 py-2.5">
+        <div className="h-2 w-1/2 rounded-full bg-accent-primary/40" />
+        <div className="mt-2 h-2 w-3/4 rounded-full bg-accent-primary/25" />
+      </div>
+      <div className="h-2 w-3/5 rounded-full bg-border-primary" />
+    </div>
+  </MockShell>
+);
+
+/** Step 3 — 편집 타임라인 (멀티트랙 + 플레이헤드). */
+const MockTimeline = () => (
+  <MockShell label="Edit Timeline">
+    <div className="mb-4 flex aspect-[16/6] items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary/15 to-accent-secondary/10">
+      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-bg-primary/70 backdrop-blur">
+        <Play size={16} className="ml-0.5 fill-text-primary text-text-primary" />
+      </span>
+    </div>
+    <div className="relative space-y-2">
+      {[
+        ['w-[30%]', 'w-[24%]', 'w-[34%]'],
+        ['w-[46%]', 'w-[40%]'],
+        ['w-[70%]', 'w-[18%]'],
+      ].map((clips, row) => (
+        <div key={row} className="flex gap-1.5">
+          {clips.map((w, i) => (
+            <div
+              key={i}
+              className={`h-5 rounded ${w} ${
+                row === 0 ? 'bg-accent-primary/60' : row === 1 ? 'bg-accent-secondary/45' : 'bg-border-primary'
+              }`}
+            />
+          ))}
+        </div>
+      ))}
+      {/* playhead */}
+      <motion.div
+        initial={{ left: '4%' }}
+        whileInView={{ left: ['4%', '88%'] }}
+        viewport={{ once: false, amount: 0.6 }}
+        transition={{ duration: 7, repeat: Infinity, repeatType: 'reverse', ease: 'linear' }}
+        className="absolute -top-1 bottom-0 w-px bg-red-400"
+        style={{ left: '4%' }}
+      >
+        <span className="absolute -left-[3px] -top-1 h-2 w-[7px] rounded-sm bg-red-400" />
+      </motion.div>
+    </div>
+  </MockShell>
+);
+
+/** Step 4 — 업로드 이후: 시청 지속률 복기 리포트. */
+const MockRetention = () => (
+  <MockShell label="사후 관리 리포트">
+    <div className="mb-3 flex items-center gap-2">
+      <span className="rounded-md bg-border-primary/50 px-2 py-1 text-[10px] font-bold text-text-secondary">개선 전</span>
+      <span className="rounded-md bg-accent-primary px-2 py-1 text-[10px] font-bold text-white">개선 후</span>
+      <span className="ml-auto text-[10px] font-semibold text-text-secondary">시청 지속률</span>
+    </div>
+    <svg viewBox="0 0 300 110" className="w-full" aria-hidden>
+      <defs>
+        <linearGradient id="ret-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {/* 개선 전 — 급락하는 회색 곡선 */}
+      <path
+        d="M0,30 C40,38 70,74 120,86 C180,98 240,100 300,102"
+        fill="none" stroke="var(--border-primary)" strokeWidth="2.5" strokeDasharray="5 4"
+      />
+      {/* 개선 후 — 완만하게 유지되는 브랜드 곡선 */}
+      <motion.path
+        d="M0,22 C50,26 90,38 150,46 C210,54 260,58 300,60"
+        fill="none" stroke="var(--accent-primary)" strokeWidth="3" strokeLinecap="round"
+        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <path d="M0,22 C50,26 90,38 150,46 C210,54 260,58 300,60 L300,110 L0,110 Z" fill="url(#ret-fill)" />
+      <circle cx="150" cy="46" r="4" fill="var(--accent-primary)" />
+    </svg>
+    <div className="mt-2 h-2 w-1/2 rounded-full bg-border-primary" />
+  </MockShell>
+);
+
+/** Step 5 — 월 제작 쿼터 보드. */
+const MockQuota = () => {
+  const filled = 17;
+  return (
+    <MockShell label="이번 달 제작 쿼터">
+      <div className="grid grid-cols-10 gap-1.5">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <motion.span
+            key={i}
+            initial={{ opacity: 0, scale: 0.6 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+            transition={{ duration: 0.3, delay: i * 0.03 }}
+            className={`aspect-square rounded-md ${
+              i < filled ? 'bg-accent-primary/80' : 'border border-dashed border-border-primary'
+            }`}
+          />
+        ))}
+      </div>
+      <div className="mt-4 flex items-center justify-between">
+        <div>
+          <div className="text-lg font-black tabular-nums text-text-primary">17 / 20</div>
+          <div className="text-[11px] text-text-secondary">품질 유지를 위한 월 한정 수량</div>
+        </div>
+        <span className="rounded-full bg-red-500/10 px-3 py-1.5 text-[11px] font-bold text-red-500">
+          마감 임박
+        </span>
+      </div>
+    </MockShell>
+  );
+};
+
+const GROWTH_MOCKUPS = [MockChannels, MockObjective, MockTimeline, MockRetention, MockQuota];
 
 // ── Growth steps (alternating image + text) ─────────────────────
 const Growth = () => {
   const { growth } = useContent('home');
   return (
-    <section className="bg-bg-primary py-28">
+    <section className="bg-bg-primary py-16 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader eyebrow={growth.eyebrow} headline={growth.headline} accent="성장" center />
-        <div className="space-y-24 md:space-y-32">
+        <div className="space-y-16 md:space-y-32">
           {growth.steps.map((item, i) => {
             const flip = i % 2 === 1;
+            const StepMock = GROWTH_MOCKUPS[i % GROWTH_MOCKUPS.length];
             return (
               <div
                 key={item.step}
@@ -338,7 +495,7 @@ const Growth = () => {
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   className={flip ? 'md:order-2' : ''}
                 >
-                  <span className="bg-brand-gradient mb-5 inline-block rounded-full px-4 py-1.5 text-sm font-bold text-white">
+                  <span className="mb-5 inline-block rounded-full bg-accent-primary/10 px-4 py-1.5 text-sm font-bold text-accent-primary">
                     {item.step}
                   </span>
                   <h3 className="mb-6 text-2xl font-black leading-snug text-text-primary md:text-3xl">
@@ -360,7 +517,7 @@ const Growth = () => {
                   transition={{ duration: 0.7, delay: 0.1 }}
                   className={flip ? 'md:order-1' : ''}
                 >
-                  <Mockup variant={i % 2 === 0 ? 'chart' : 'app'} />
+                  <StepMock />
                 </motion.div>
               </div>
             );
@@ -379,10 +536,10 @@ const Safety = () => {
     { title: safety.card2Title, body: safety.card2Body, icon: Clock, tint: 'text-purple-400 bg-purple-500/10' },
   ];
   return (
-    <section className="relative overflow-hidden border-y border-border-primary bg-bg-secondary py-28">
+    <section className="relative overflow-hidden border-y border-border-primary bg-bg-secondary py-16 md:py-28">
       <div className="bg-grid absolute inset-0 opacity-30" />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <div className="mb-16 text-center">
+        <div className="mb-10 text-center md:mb-16">
           <motion.h2
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
             className="text-3xl font-black tracking-tight text-text-primary md:text-5xl"
@@ -421,7 +578,7 @@ const Safety = () => {
 const Process = () => {
   const { process } = useContent('home');
   return (
-    <section className="bg-bg-primary py-28">
+    <section className="bg-bg-primary py-16 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         {/* Intro */}
         <div className="mx-auto max-w-2xl text-center">
@@ -446,7 +603,7 @@ const Process = () => {
         </div>
 
         {/* Horizontal timeline — scrolls on small screens, spans the row on large */}
-        <div className="mt-20">
+        <div className="mt-12 md:mt-20">
           <ProcessTimeline steps={process.steps} />
         </div>
 
@@ -472,7 +629,7 @@ const FAQ = () => {
   const { faq } = useContent('home');
   const [open, setOpen] = useState(null);
   return (
-    <section className="bg-bg-primary py-28">
+    <section className="bg-bg-primary py-16 md:py-28">
       <div className="mx-auto max-w-4xl px-6">
         <SectionHeader eyebrow={faq.eyebrow} headline={faq.headline} center />
         <div className="border-t border-border-primary">

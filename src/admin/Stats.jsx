@@ -37,7 +37,9 @@ export default function Stats() {
   if (state === "error") {
     return <p className="text-red-400">통계를 불러오지 못했습니다. 새로고침해 주세요.</p>;
   }
-  if (!data.configured) return <SetupGuide reason={data.reason} detail={data.detail} />;
+  if (!data.configured) {
+    return <SetupGuide reason={data.reason} detail={data.detail} envSeen={data.envSeen} />;
+  }
 
   const { totals, daily, topPages, channels, realtime, cachedAt, stale, propertyId } = data;
 
@@ -199,7 +201,7 @@ function Table({ head, rows }) {
   );
 }
 
-function SetupGuide({ reason, detail }) {
+function SetupGuide({ reason, detail, envSeen }) {
   const steps = {
     "no-credentials": [
       "서버에 GA_SERVICE_ACCOUNT_JSON 값이 비어 있습니다 (변수 자체가 안 보임).",
@@ -244,6 +246,22 @@ function SetupGuide({ reason, detail }) {
         ))}
       </ol>
       {detail && <p className="mt-4 break-all font-mono text-xs text-slate-500">{detail}</p>}
+      {envSeen && (
+        <div className="mt-5 border-t border-amber-800/40 pt-4">
+          <p className="text-xs font-bold text-slate-400">서버에 실제로 보이는 GA 변수 (이름·길이만 표시)</p>
+          {envSeen.length ? (
+            <ul className="mt-2 space-y-1 font-mono text-xs text-slate-300">
+              {envSeen.map((e) => (
+                <li key={e}>· {e}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 font-mono text-xs text-red-400">
+              없음 — GA로 시작하는 환경변수가 서버에 하나도 전달되지 않았습니다.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

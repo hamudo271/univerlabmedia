@@ -41,21 +41,43 @@ function describe(raw) {
   return `길이 ${raw.length}자, 첫 글자 "${head}"`;
 }
 
+/**
+ * Names (+ value lengths only) of every GA* env var the server can actually
+ * see. Rendered on the setup screen so "the variable never reached the
+ * server" vs "it arrived under a misspelled name" stops being guesswork.
+ * Values are never included.
+ */
+export function gaEnvSeen() {
+  return Object.keys(process.env)
+    .filter((k) => k.startsWith("GA"))
+    .sort()
+    .map((k) => `${k} (${(process.env[k] || "").length}자)`);
+}
+
+/** Strip one pair of wrapping quotes some env editors keep literally. */
+function unquote(v) {
+  const t = (v || "").trim();
+  if (t.length >= 2 && ((t[0] === '"' && t.at(-1) === '"') || (t[0] === "'" && t.at(-1) === "'"))) {
+    return t.slice(1, -1);
+  }
+  return t;
+}
+
 function loadCreds() {
   if (credsTried) return creds;
   credsTried = true;
 
-  const envJson = process.env.GA_SERVICE_ACCOUNT_JSON;
-  const envB64 = process.env.GA_SERVICE_ACCOUNT_BASE64;
-  const envFile = process.env.GA_SERVICE_ACCOUNT_FILE;
+  const envJson = unquote(process.env.GA_SERVICE_ACCOUNT_JSON);
+  const envB64 = unquote(process.env.GA_SERVICE_ACCOUNT_BASE64);
+  const envFile = unquote(process.env.GA_SERVICE_ACCOUNT_FILE);
 
   let raw = null;
   try {
     // Take the value verbatim from whichever source is set; the encoding is
     // normalised below rather than assumed from the variable name.
-    if (envJson && envJson.trim()) {
+    if (envJson) {
       raw = envJson;
-    } else if (envB64 && envB64.trim()) {
+    } else if (envB64) {
       raw = envB64;
     } else if (envFile) {
       raw = readFileSync(envFile, "utf8");
@@ -157,8 +179,8 @@ const MEASUREMENT_ID = process.env.GA4_MEASUREMENT_ID || "G-6T1VR34XHP";
 let discoveredProperty = null;
 
 async function resolveProperty(token) {
-  const envId = process.env.GA4_PROPERTY_ID;
-  if (envId) return `properties/${String(envId).replace(/^properties\//, "")}`;
+  const envId = unquote(process.env.GA4_PROPERTY_ID);
+  if (envId) return `properties/${envId.replace(/^properties\//, "")}`;
   if (discoveredProperty) return discoveredProperty;
 
   const headers = { Authorization: `Bearer ${token}` };
@@ -345,6 +367,7 @@ export async function getStats({ force = false } = {}) {
       configured: false,
       reason: credsFailure?.reason || "no-credentials",
       detail: credsFailure?.detail,
+      envSeen: gaEnvSeen(),
     };
   }
 
