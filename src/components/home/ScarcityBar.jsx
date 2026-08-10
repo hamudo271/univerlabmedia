@@ -8,16 +8,38 @@ import { useContent } from '../../context/ContentContext.jsx';
  * Tasteful conversion bar pinned to the bottom of the viewport.
  * Shows a soft live-viewer count + monthly remaining-slots, dismissible.
  */
+const DISMISS_KEY = 'scarcity-bar-dismissed';
+
 const ScarcityBar = () => {
   const { scarcity } = useContent('home');
   const [visible, setVisible] = useState(false);
+  const [nearBottom, setNearBottom] = useState(false);
   const [viewers, setViewers] = useState(scarcity?.baseViewers ?? 11);
 
-  // Reveal after a short delay (less intrusive than instant)
+  // Reveal after a short delay (less intrusive than instant); stay hidden for
+  // the rest of the session once the visitor closes it.
   useEffect(() => {
+    if (sessionStorage.getItem(DISMISS_KEY)) return;
     const t = setTimeout(() => setVisible(true), 1200);
     return () => clearTimeout(t);
   }, []);
+
+  // Step aside near the bottom of the page so the final CTA and footer are
+  // never covered by the pinned bar.
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.documentElement;
+      setNearBottom(el.scrollHeight - (window.scrollY + window.innerHeight) < 480);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const dismiss = () => {
+    setVisible(false);
+    sessionStorage.setItem(DISMISS_KEY, '1');
+  };
 
   // Gently fluctuate the viewer count for a "live" feel
   useEffect(() => {
@@ -32,13 +54,13 @@ const ScarcityBar = () => {
 
   return (
     <AnimatePresence>
-      {visible && (
+      {visible && !nearBottom && (
         <motion.div
           initial={{ y: 80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-4 left-1/2 z-40 w-[min(92%,860px)] -translate-x-1/2"
+          className="fixed bottom-4 left-1/2 z-30 w-[min(92%,860px)] -translate-x-1/2"
         >
           <div className="glass flex items-center gap-3 rounded-2xl border border-border-primary px-4 py-3 shadow-2xl shadow-black/30 sm:gap-5 sm:px-6">
             {/* Live viewers */}
@@ -79,7 +101,7 @@ const ScarcityBar = () => {
             </Link>
 
             <button
-              onClick={() => setVisible(false)}
+              onClick={dismiss}
               aria-label="닫기"
               className="text-text-secondary/60 transition-colors hover:text-text-primary"
             >
