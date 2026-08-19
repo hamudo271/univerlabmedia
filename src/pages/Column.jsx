@@ -95,13 +95,26 @@ const Column = () => {
               )}
             </>
           ) : showFallback ? (
-            <motion.div
-              variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
-            >
-              {list.items.map((item, i) => (
-                <FallbackCard key={i} item={item} readMore={list.readMore} />
-              ))}
+            /* animate (not whileInView): this grid mounts after the fetch
+               resolves while already inside the viewport, and the in-view
+               observer misses that case — cards stayed at opacity 0. */
+            <motion.div variants={stagger} initial="hidden" animate="visible">
+              {/* 공개 전 상태를 명시해, 클릭되지 않는 카드가 "고장"으로
+                  읽히지 않게 한다 */}
+              <motion.div variants={fadeInUp} className="mb-10 text-center">
+                <span className="inline-flex items-center gap-2 rounded-full border border-border-primary bg-bg-secondary px-5 py-2.5 text-sm font-semibold text-text-secondary">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-primary opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-primary" />
+                  </span>
+                  첫 칼럼을 준비하고 있어요 — 아래는 공개 예정 주제입니다
+                </span>
+              </motion.div>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {list.items.map((item, i) => (
+                  <FallbackCard key={i} item={item} />
+                ))}
+              </div>
             </motion.div>
           ) : (
             <div className="py-20 text-center text-text-secondary">
@@ -160,12 +173,13 @@ function PostCard({ post, readMore }) {
   );
 }
 
-// Static, non-clickable card kept for the pre-launch empty state.
-function FallbackCard({ item, readMore }) {
+// Static, non-clickable teaser card for the pre-launch empty state.
+// No hover lift and no READ MORE label — nothing should suggest a link.
+function FallbackCard({ item }) {
   return (
     <motion.article
-      variants={fadeInUp} whileHover={{ y: -8 }}
-      className="group flex flex-col overflow-hidden rounded-3xl border border-border-primary bg-bg-secondary"
+      variants={fadeInUp}
+      className="flex flex-col overflow-hidden rounded-3xl border border-border-primary bg-bg-secondary"
     >
       <div className="relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-bg-elevated">
         <div className="bg-grid absolute inset-0 opacity-40" />
@@ -176,13 +190,15 @@ function FallbackCard({ item, readMore }) {
         <span className="bg-brand-gradient relative z-10 rounded-full px-4 py-1.5 text-xs font-bold text-white">
           {item.badge}
         </span>
+        <span className="absolute right-4 top-4 z-10 rounded-full bg-bg-primary/80 px-3 py-1 text-[11px] font-bold text-text-secondary backdrop-blur">
+          공개 예정
+        </span>
       </div>
       <div className="flex flex-1 flex-col p-7">
         <h3 className="mb-3 text-xl font-bold leading-snug text-text-primary">{item.title}</h3>
         <p className="mb-6 line-clamp-2 leading-relaxed text-text-secondary">{item.desc}</p>
-        <div className="mt-auto flex items-center justify-between border-t border-border-primary pt-4 text-sm text-text-secondary/70">
-          <span>{item.date}</span>
-          <span className="font-semibold text-accent-primary">{readMore}</span>
+        <div className="mt-auto border-t border-border-primary pt-4 text-sm text-text-secondary/70">
+          {item.date}
         </div>
       </div>
     </motion.article>
