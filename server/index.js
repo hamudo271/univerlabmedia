@@ -1,3 +1,7 @@
+// Load .env before anything reads process.env (Railway injects real env
+// vars in production; this is for local dev). Must stay the first import.
+import "dotenv/config";
+
 import express from "express";
 import compression from "compression";
 import helmet from "helmet";
