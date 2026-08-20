@@ -23,6 +23,9 @@ uploads/
 .idea
 .DS_Store
 .claude/
+# Local agent-tooling artifacts (installed skills), not project code
+.agents/
+skills-lock.json
 *.suo
 *.ntvs*
 *.njsproj
