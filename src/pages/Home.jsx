@@ -69,47 +69,80 @@ const SectionHeader = ({ eyebrow, headline, accent, subhead, center }) => (
   </div>
 );
 
-// ── Brand intro (dark, grid + glow, stats) ──────────────────────
+/**
+ * One record in the evidence ledger. The value sits in its own right-aligned
+ * column so the four numbers line up on a single axis — the point of the
+ * section is that these are measurements, not decoration.
+ * `anchor` marks the one claim competitors cannot copy.
+ */
+function StatRow({ stat, anchor }) {
+  const note = stat.href ? (
+    <Link to={stat.href} className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-accent-primary hover:underline">
+      {stat.note} <ArrowRight size={14} />
+    </Link>
+  ) : (
+    stat.note && <span className="mt-1 block text-sm text-text-secondary">{stat.note}</span>
+  );
+
+  return (
+    <motion.div
+      variants={fadeInUp}
+      className="flex items-baseline gap-5 border-t border-text-primary/10 py-4 first:border-t-0 first:pt-0 md:gap-8 md:py-5"
+    >
+      {/* dt precedes dd for correct <dl> semantics; the value is flipped left visually. */}
+      <dt className="order-2 min-w-0">
+        <span className={`block leading-snug ${anchor ? 'text-lg font-bold text-text-primary md:text-xl' : 'text-base font-bold text-text-primary md:text-lg'}`}>
+          {stat.label}
+        </span>
+        {note}
+      </dt>
+      <dd
+        className={`order-1 w-24 shrink-0 text-right text-3xl font-black tabular-nums leading-none tracking-[-0.01em] md:w-32 md:text-5xl ${
+          anchor ? 'text-accent-primary' : 'text-text-primary'
+        }`}
+      >
+        {stat.value}
+      </dd>
+    </motion.div>
+  );
+}
+
+// ── Brand intro — claim on the left, evidence ledger on the right ───
 const BrandIntro = () => {
   const { brandIntro } = useContent('home');
-  return (
-    <section className="relative overflow-hidden border-y border-border-primary bg-bg-primary py-20 md:py-32">
-      <div className="bg-grid absolute inset-0 opacity-40" />
-      <div className="glow-accent absolute inset-0" style={{ '--gx': '20%', '--gy': '10%' }} />
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <motion.span
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-          className="mb-5 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary"
-        >
-          {brandIntro.eyebrow}
-        </motion.span>
-        <motion.h2
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-          className="max-w-4xl whitespace-pre-line text-4xl font-black leading-[1.1] tracking-tight text-text-primary md:text-7xl"
-        >
-          <Accented text={brandIntro.headline} accent={brandIntro.accent} />
-        </motion.h2>
-        <motion.p
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-          className="mt-8 max-w-2xl whitespace-pre-line text-lg text-text-secondary md:text-xl"
-        >
-          {brandIntro.body}
-        </motion.p>
+  // "저작권 분쟁 0건" is the only asymmetric claim here; the other three are
+  // things any agency can print. Give it the accent so the row is not flat.
+  const anchor = brandIntro.stats.findIndex((s) => s.value === '0건');
 
-        <motion.div
-          variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
-          className="mt-12 grid grid-cols-2 gap-4 md:mt-20 md:gap-6 lg:grid-cols-4"
+  return (
+    <section className="border-y border-border-primary bg-bg-secondary py-20 md:py-28">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-16">
+        {/* 주장 */}
+        <div className="lg:col-span-5">
+          <motion.h2
+            initial="hidden" animate="visible" variants={fadeInUp}
+            className="whitespace-pre-line text-4xl font-black leading-[1.15] tracking-[-0.01em] text-text-primary md:text-6xl"
+          >
+            <Accented text={brandIntro.headline} accent={brandIntro.accent} />
+          </motion.h2>
+          <motion.p
+            initial="hidden" animate="visible" variants={fadeInUp}
+            className="mt-6 max-w-md text-lg leading-relaxed text-text-secondary"
+          >
+            {brandIntro.body.replace(/\n/g, ' ')}
+          </motion.p>
+        </div>
+
+        {/* 증거 — animate (not whileInView) so the proof never depends on an
+            observer firing; a stuck reveal used to leave this band empty. */}
+        <motion.dl
+          variants={stagger} initial="hidden" animate="visible"
+          className="lg:col-span-7 lg:pt-2"
         >
-          {brandIntro.stats.map((s, i) => (
-            <motion.div
-              key={i} variants={fadeInUp}
-              className="rounded-2xl border border-border-primary bg-bg-secondary/60 p-6 text-center backdrop-blur"
-            >
-              <div className="text-3xl font-black text-text-primary md:text-5xl">{s.value}</div>
-              <div className="mt-2 text-sm text-text-secondary">{s.label}</div>
-            </motion.div>
+          {brandIntro.stats.map((s) => (
+            <StatRow key={s.label} stat={s} anchor={brandIntro.stats.indexOf(s) === anchor} />
           ))}
-        </motion.div>
+        </motion.dl>
       </div>
     </section>
   );
@@ -629,7 +662,8 @@ const FAQ = () => {
   const { faq } = useContent('home');
   const [open, setOpen] = useState(null);
   return (
-    <section className="bg-bg-primary py-16 md:py-28">
+    /* id: BrandIntro 의 "환불 기준 보기" 링크가 여기로 내려온다 */
+    <section id="faq" className="scroll-mt-24 bg-bg-primary py-16 md:py-28">
       <div className="mx-auto max-w-4xl px-6">
         <SectionHeader eyebrow={faq.eyebrow} headline={faq.headline} center />
         <div className="border-t border-border-primary">
