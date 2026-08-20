@@ -115,7 +115,9 @@ const BrandIntro = () => {
   const anchor = brandIntro.stats.findIndex((s) => s.value === '0건');
 
   return (
-    <section className="border-y border-border-primary bg-bg-secondary py-20 md:py-28">
+    /* 배경은 흰색을 유지한다. 다음 Cases 섹션이 bg-secondary 라서 여기까지
+       회색으로 두면 두 섹션이 한 덩어리로 붙어 경계가 사라진다. */
+    <section className="border-b border-border-primary bg-bg-primary py-20 md:py-28">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-16">
         {/* 주장 */}
         <div className="lg:col-span-5">
