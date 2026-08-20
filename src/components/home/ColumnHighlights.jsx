@@ -35,7 +35,9 @@ const ColumnHighlights = () => {
   if (!items || items.length === 0) return null;
 
   return (
-    <section className="border-t border-border-primary bg-bg-secondary py-28">
+    /* 앞의 ServiceCards 가 bg-secondary 라, 여기까지 회색이면 두 섹션이
+       한 덩어리로 붙는다. 흰색으로 두어 교차 리듬을 유지한다. */
+    <section className="border-t border-border-primary bg-bg-primary py-16 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader eyebrow="Insights" headline={'최신\n인사이트'} accent="인사이트" center />
 
@@ -57,7 +59,6 @@ const ColumnHighlights = () => {
                     />
                   ) : (
                     <>
-                      <div className="bg-grid absolute inset-0 opacity-40" />
                       <div
                         className="absolute inset-0 opacity-60"
                         style={{ background: 'radial-gradient(420px circle at 30% 20%, rgba(91,140,255,0.25), transparent 60%), radial-gradient(360px circle at 80% 90%, rgba(167,139,250,0.22), transparent 60%)' }}

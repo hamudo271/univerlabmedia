@@ -144,7 +144,6 @@ function PostCard({ post, readMore }) {
             />
           ) : (
             <>
-              <div className="bg-grid absolute inset-0 opacity-40" />
               <div
                 className="absolute inset-0 opacity-60"
                 style={{ background: 'radial-gradient(420px circle at 30% 20%, rgba(91,140,255,0.25), transparent 60%), radial-gradient(360px circle at 80% 90%, rgba(167,139,250,0.22), transparent 60%)' }}
@@ -182,7 +181,6 @@ function FallbackCard({ item }) {
       className="flex flex-col overflow-hidden rounded-3xl border border-border-primary bg-bg-secondary"
     >
       <div className="relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-bg-elevated">
-        <div className="bg-grid absolute inset-0 opacity-40" />
         <div
           className="absolute inset-0 opacity-60"
           style={{ background: 'radial-gradient(420px circle at 30% 20%, rgba(91,140,255,0.25), transparent 60%), radial-gradient(360px circle at 80% 90%, rgba(167,139,250,0.22), transparent 60%)' }}

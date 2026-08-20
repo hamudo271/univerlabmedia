@@ -28,10 +28,10 @@ const ServiceDetail = () => {
       <SEO title={data.title} description={data.desc} path={`/service/${id}`} image={data.heroImage} />
 
       {/* Hero with background image */}
-      <section className="relative overflow-hidden border-b border-border-primary pb-24 pt-44">
+      {/* 다른 페이지의 PageHero 와 같은 회색 헤더 밴드로 맞춘다 */}
+      <section className="border-b border-border-primary bg-bg-secondary pb-16 pt-32 md:pb-24 md:pt-44">
         <img src={data.heroImage} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/80 to-bg-primary/40" />
-        <div className="glow-accent absolute inset-0" style={{ '--gx': '15%', '--gy': '10%' }} />
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} className="mb-6 flex items-center gap-3">
             <span className="h-px w-10 bg-accent-primary" />
@@ -72,7 +72,6 @@ const ServiceDetail = () => {
 
       {/* Pricing */}
       <section className="relative overflow-hidden bg-bg-secondary py-28">
-        <div className="bg-grid absolute inset-0 opacity-30" />
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <SectionHeader eyebrow={shared.pricingEyebrow} headline={shared.pricingHeadline} center />
           <motion.div

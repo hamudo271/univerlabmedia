@@ -49,7 +49,6 @@ const Company = () => {
 
       {/* Teamwork statement */}
       <section className="relative overflow-hidden border-b border-border-primary bg-bg-secondary py-28">
-        <div className="glow-accent absolute inset-0" style={{ '--gx': '80%', '--gy': '20%' }} />
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <motion.h2
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}

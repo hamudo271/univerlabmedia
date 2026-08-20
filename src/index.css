@@ -95,29 +95,6 @@ body {
 
 /* ── Utilities ─────────────────────────────────────────────── */
 
-/* Subtle tech grid background (used on dark feature sections) */
-.bg-grid {
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--text-primary) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--text-primary) 6%, transparent) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
-
-/* Radial glow accent — blue → violet brand blend */
-.glow-accent {
-  background:
-    radial-gradient(
-      620px circle at var(--gx, 50%) var(--gy, 0%),
-      color-mix(in srgb, var(--accent-primary) 26%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      520px circle at calc(var(--gx, 50%) + 30%) calc(var(--gy, 0%) + 40%),
-      color-mix(in srgb, var(--accent-secondary) 22%, transparent),
-      transparent 62%
-    );
-}
-
 /* Brand gradient (blue → violet, matches the logo mark) */
 .bg-brand-gradient {
   background-image: linear-gradient(120deg, var(--accent-primary), var(--accent-secondary));
