@@ -193,6 +193,34 @@ body {
 .post-prose img { max-width: 100%; height: auto; border-radius: 0.75rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
 .post-prose strong { font-weight: 700; }
 
+/* 표 — 칼럼 본문에서 비교표를 자주 쓴다. 좁은 화면에서는 표만 가로 스크롤되고
+   페이지 자체는 흔들리지 않도록 래퍼에 overflow-x 를 준다. */
+.post-prose .table-wrap { overflow-x: auto; margin-top: 1.75rem; }
+.post-prose table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.post-prose thead th {
+  background: var(--bg-secondary);
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+.post-prose th,
+.post-prose td {
+  border: 1px solid var(--border-primary);
+  padding: 0.7rem 0.9rem;
+  vertical-align: top;
+}
+.post-prose tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--bg-secondary) 45%, transparent);
+}
+/* 표 안에서는 문단 간격 규칙을 끈다 */
+.post-prose table p { margin-top: 0; }
+
 /* Tiptap 편집 영역 */
 .post-prose.ProseMirror:focus { outline: none; }
 .post-prose.ProseMirror p.is-editor-empty:first-child::before {
