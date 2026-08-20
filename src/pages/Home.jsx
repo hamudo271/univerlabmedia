@@ -121,6 +121,12 @@ const BrandIntro = () => {
       <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-16">
         {/* 주장 */}
         <div className="lg:col-span-5">
+          <motion.span
+            initial="hidden" animate="visible" variants={fadeInUp}
+            className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary"
+          >
+            {brandIntro.eyebrow}
+          </motion.span>
           <motion.h2
             initial="hidden" animate="visible" variants={fadeInUp}
             className="whitespace-pre-line text-4xl font-black leading-[1.15] tracking-[-0.01em] text-text-primary md:text-6xl"
@@ -207,7 +213,7 @@ const Partners = () => {
         <div className="mb-12 text-center md:mb-20">
           <motion.span
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-            className="mb-3 block text-xs font-bold uppercase tracking-[0.25em] text-accent-primary"
+            className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary"
           >
             {partners.eyebrow}
           </motion.span>
@@ -251,7 +257,6 @@ const Testimonials = () => {
 
   return (
     <section className="relative overflow-hidden border-y border-border-primary bg-bg-secondary py-16 md:py-28">
-      <div className="glow-accent absolute inset-0" style={{ '--gx': '80%', '--gy': '0%' }} />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow={testimonials.eyebrow} headline={testimonials.headline} accent={testimonials.accent} center
@@ -572,7 +577,6 @@ const Safety = () => {
   ];
   return (
     <section className="relative overflow-hidden border-y border-border-primary bg-bg-secondary py-16 md:py-28">
-      <div className="bg-grid absolute inset-0 opacity-30" />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <div className="mb-10 text-center md:mb-16">
           <motion.h2
@@ -665,7 +669,7 @@ const FAQ = () => {
   const [open, setOpen] = useState(null);
   return (
     /* id: BrandIntro 의 "환불 기준 보기" 링크가 여기로 내려온다 */
-    <section id="faq" className="scroll-mt-24 bg-bg-primary py-16 md:py-28">
+    <section id="faq" className="scroll-mt-24 bg-bg-secondary py-16 md:py-28">
       <div className="mx-auto max-w-4xl px-6">
         <SectionHeader eyebrow={faq.eyebrow} headline={faq.headline} center />
         <div className="border-t border-border-primary">

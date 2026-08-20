@@ -8,7 +8,7 @@ import { useContent } from '../context/ContentContext.jsx';
 const FailureSection = () => {
   const { failure } = useContent('service');
   return (
-    <section className="border-b border-border-primary bg-bg-primary py-28">
+    <section className="border-b border-border-primary bg-bg-secondary py-28">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader eyebrow={failure.eyebrow} headline={failure.headline} accent="실패" subhead={failure.subhead} />
         <motion.div
@@ -36,8 +36,7 @@ const FailureSection = () => {
 const PrinciplesSection = () => {
   const { principles } = useContent('service');
   return (
-    <section className="relative overflow-hidden border-b border-border-primary bg-bg-secondary py-28">
-      <div className="bg-grid absolute inset-0 opacity-30" />
+    <section className="border-b border-border-primary bg-bg-primary py-20 md:py-28">
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <SectionHeader eyebrow={principles.eyebrow} headline={principles.headline} accent="경영철칙" subhead={principles.subhead} />
         <div className="grid grid-cols-1 gap-x-12 gap-y-12 md:grid-cols-2">
@@ -62,7 +61,7 @@ const PrinciplesSection = () => {
 const ProcessSection = () => {
   const { process } = useContent('service');
   return (
-    <section className="border-b border-border-primary bg-bg-primary py-28">
+    <section className="border-b border-border-primary bg-bg-secondary py-28">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader eyebrow={process.eyebrow} headline={process.headline} accent="프로세스" center />
         <ProcessTimeline steps={process.steps} />
@@ -82,7 +81,7 @@ const Service = () => {
         accent={hero.headlineLine2}
         subhead={hero.subhead}
       />
-      <ServiceCards />
+      <ServiceCards tone="primary" />
       <FailureSection />
       <PrinciplesSection />
       <ProcessSection />

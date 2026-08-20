@@ -27,12 +27,14 @@ export const Accented = ({ text = '', accent }) => {
   );
 };
 
-/** Premium full-width page hero with grid + brand glow. */
+/**
+ * Full-width page header. Carries a solid secondary fill so it reads as a
+ * band against the white content below it, now that the decorative grid and
+ * glow are gone.
+ */
 export const PageHero = ({ eyebrow, title, accent, subhead }) => (
-  <section className="relative overflow-hidden border-b border-border-primary bg-bg-primary pb-16 pt-32 md:pb-24 md:pt-44">
-    <div className="bg-grid absolute inset-0 opacity-40" />
-    <div className="glow-accent absolute inset-0" style={{ '--gx': '12%', '--gy': '0%' }} />
-    <div className="relative z-10 mx-auto max-w-7xl px-6">
+  <section className="border-b border-border-primary bg-bg-secondary pb-16 pt-32 md:pb-24 md:pt-44">
+    <div className="mx-auto max-w-7xl px-6">
       {eyebrow && (
         <motion.div
           initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
@@ -243,11 +245,13 @@ const HexMark = ({ className = '' }) => (
  * reachable through one consistent, on-brand card grid.
  * Pass `withMore` to append a "서비스 더 보기" → /service button.
  */
-export const ServiceCards = ({ withMore = false }) => {
+export const ServiceCards = ({ withMore = false, tone = 'secondary' }) => {
   const { services } = useContent('serviceDetail');
   const items = services.items;
+  // 페이지마다 앞뒤 섹션이 달라, 흰/회 교차가 끊기지 않도록 배경을 넘겨받는다.
+  const fill = tone === 'primary' ? 'bg-bg-primary' : 'bg-bg-secondary';
   return (
-    <section className="border-y border-border-primary bg-bg-secondary py-16 md:py-28">
+    <section className={`border-y border-border-primary py-16 md:py-28 ${fill}`}>
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader eyebrow="Services" headline={'서비스를\n소개합니다'} accent="소개" center />
         <motion.div

@@ -90,7 +90,6 @@ const HeroSlider = () => {
             'radial-gradient(900px circle at 12% 90%, rgba(91,140,255,0.22), transparent 55%), radial-gradient(760px circle at 85% 15%, rgba(167,139,250,0.18), transparent 55%)',
         }}
       />
-      <div className="absolute inset-0 bg-grid opacity-25" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6">
