@@ -30,13 +30,13 @@ const stagger = {
 };
 
 /** Render a headline string, gradient-highlighting the `accent` substring. */
-const Accented = ({ text, accent }) => {
+const Accented = ({ text, accent, onDark = false }) => {
   if (!accent || !text.includes(accent)) return <>{text}</>;
   const [before, after] = text.split(accent);
   return (
     <>
       {before}
-      <span className="text-gradient">{accent}</span>
+      <span className={onDark ? 'text-gradient-on-dark' : 'text-gradient'}>{accent}</span>
       {after}
     </>
   );
@@ -70,72 +70,61 @@ const SectionHeader = ({ eyebrow, headline, accent, subhead, center }) => (
 );
 
 /**
- * One record in the evidence ledger. The value sits in its own right-aligned
- * column so the four numbers line up on a single axis — the point of the
- * section is that these are measurements, not decoration.
- * `anchor` marks the one claim competitors cannot copy.
+ * One cell of the 2×2 evidence grid on the navy band. Hairlines between
+ * cells come from the grid, not from card chrome, so the numbers read as
+ * one instrument panel rather than four boxes.
  */
-function StatRow({ stat, anchor }) {
-  const note = stat.href ? (
-    <Link to={stat.href} className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-accent-primary hover:underline">
-      {stat.note} <ArrowRight size={14} />
-    </Link>
-  ) : (
-    stat.note && <span className="mt-1 block text-sm text-text-secondary">{stat.note}</span>
-  );
-
+function StatCell({ stat }) {
   return (
     <motion.div
       variants={fadeInUp}
-      className="flex items-baseline gap-5 border-t border-text-primary/10 py-4 first:border-t-0 first:pt-0 md:gap-8 md:py-5"
+      className="border-t border-white/10 px-0 py-7 first:border-t-0 sm:px-8 sm:py-8 sm:[&:nth-child(2)]:border-t-0 sm:[&:nth-child(even)]:border-l sm:[&:nth-child(odd)]:pl-0"
     >
-      {/* dt precedes dd for correct <dl> semantics; the value is flipped left visually. */}
-      <dt className="order-2 min-w-0">
-        <span className={`block leading-snug ${anchor ? 'text-lg font-bold text-text-primary md:text-xl' : 'text-base font-bold text-text-primary md:text-lg'}`}>
-          {stat.label}
-        </span>
-        {note}
-      </dt>
-      <dd
-        className={`order-1 w-24 shrink-0 text-right text-3xl font-black tabular-nums leading-none tracking-[-0.01em] md:w-32 md:text-5xl ${
-          anchor ? 'text-accent-primary' : 'text-text-primary'
-        }`}
-      >
+      <dd className="text-gradient-on-dark m-0 text-5xl font-black tabular-nums leading-none tracking-[-0.02em] md:text-6xl">
         {stat.value}
       </dd>
+      <dt className="mt-3.5 text-base font-bold text-white md:text-lg">{stat.label}</dt>
+      {stat.href ? (
+        <Link
+          to={stat.href}
+          className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-[#7aa2ff] hover:underline"
+        >
+          {stat.note} <ArrowRight size={14} />
+        </Link>
+      ) : (
+        stat.note && <span className="mt-1 block text-sm text-white/50">{stat.note}</span>
+      )}
     </motion.div>
   );
 }
 
-// ── Brand intro — claim on the left, evidence ledger on the right ───
+// ── Brand intro — navy band: claim on the left, 2×2 evidence on the right ──
+// The one dark section between the hero and the final CTA. It sits on the
+// same navy as the service cards and footer, so the brand gradient reads at
+// full strength here without the white-on-white problem the old cards had.
 const BrandIntro = () => {
   const { brandIntro } = useContent('home');
-  // "저작권 분쟁 0건" is the only asymmetric claim here; the other three are
-  // things any agency can print. Give it the accent so the row is not flat.
-  const anchor = brandIntro.stats.findIndex((s) => s.value === '0건');
 
   return (
-    /* 배경은 흰색을 유지한다. 다음 Cases 섹션이 bg-secondary 라서 여기까지
-       회색으로 두면 두 섹션이 한 덩어리로 붙어 경계가 사라진다. */
-    <section className="border-b border-border-primary bg-bg-primary py-20 md:py-28">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-16">
+    <section className="bg-[#0b1020] py-20 text-white md:py-28">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-20">
         {/* 주장 */}
         <div className="lg:col-span-5">
           <motion.span
             initial="hidden" animate="visible" variants={fadeInUp}
-            className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary"
+            className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-[#5b8cff]"
           >
             {brandIntro.eyebrow}
           </motion.span>
           <motion.h2
             initial="hidden" animate="visible" variants={fadeInUp}
-            className="whitespace-pre-line text-4xl font-black leading-[1.15] tracking-[-0.01em] text-text-primary md:text-6xl"
+            className="whitespace-pre-line text-4xl font-black leading-[1.12] tracking-[-0.01em] text-white md:text-6xl"
           >
-            <Accented text={brandIntro.headline} accent={brandIntro.accent} />
+            <Accented text={brandIntro.headline} accent={brandIntro.accent} onDark />
           </motion.h2>
           <motion.p
             initial="hidden" animate="visible" variants={fadeInUp}
-            className="mt-6 max-w-md text-lg leading-relaxed text-text-secondary"
+            className="mt-6 max-w-md text-lg leading-relaxed text-white/60"
           >
             {brandIntro.body.replace(/\n/g, ' ')}
           </motion.p>
@@ -145,10 +134,10 @@ const BrandIntro = () => {
             observer firing; a stuck reveal used to leave this band empty. */}
         <motion.dl
           variants={stagger} initial="hidden" animate="visible"
-          className="lg:col-span-7 lg:pt-2"
+          className="m-0 grid grid-cols-1 sm:grid-cols-2 lg:col-span-7"
         >
           {brandIntro.stats.map((s) => (
-            <StatRow key={s.label} stat={s} anchor={brandIntro.stats.indexOf(s) === anchor} />
+            <StatCell key={s.label} stat={s} />
           ))}
         </motion.dl>
       </div>
