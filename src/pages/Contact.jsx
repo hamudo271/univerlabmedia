@@ -83,6 +83,11 @@ const Contact = () => {
       setError('개인정보 수집 및 이용에 동의해주세요.');
       return;
     }
+    // 휴대폰 번호는 11자리를 모두 채워야 발송된다 (pattern 미지원 브라우저 대비 이중 검사).
+    if (String(fd.get('phone') || '').replace(/\D/g, '').length !== 11) {
+      setError('전화번호 11자리를 모두 입력해주세요. (예: 010-1234-5678)');
+      return;
+    }
     const payload = Object.fromEntries(fd.entries());
     payload.consent = true;
     setStatus('sending');
@@ -172,6 +177,8 @@ const Contact = () => {
                   <Field label={form.phoneLabel} required>
                     <input
                       name="phone" required type="tel" inputMode="numeric" maxLength={13}
+                      pattern="\d{3}-\d{4}-\d{4}"
+                      title="휴대폰 번호 11자리를 모두 입력해주세요. (예: 010-1234-5678)"
                       value={phone} onChange={(e) => setPhone(formatPhone(e.target.value))}
                       className={fieldCls} placeholder={form.phonePlaceholder}
                     />
