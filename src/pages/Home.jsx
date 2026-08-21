@@ -70,61 +70,76 @@ const SectionHeader = ({ eyebrow, headline, accent, subhead, center }) => (
 );
 
 /**
- * One cell of the 2×2 evidence grid on the navy band. Hairlines between
- * cells come from the grid, not from card chrome, so the numbers read as
- * one instrument panel rather than four boxes.
+ * One evidence card. Filled surface rather than a hairline border, so it
+ * stays visible on white. `anchor` is the copyright claim — the one number a
+ * competitor cannot copy — and takes the brand gradient.
  */
-function StatCell({ stat }) {
+function StatCard({ stat, anchor }) {
   return (
     <motion.div
       variants={fadeInUp}
-      className="border-t border-white/10 px-0 py-7 first:border-t-0 sm:px-8 sm:py-8 sm:[&:nth-child(2)]:border-t-0 sm:[&:nth-child(even)]:border-l sm:[&:nth-child(odd)]:pl-0"
+      className={`rounded-2xl p-7 ${anchor ? 'bg-brand-gradient text-white shadow-lg shadow-accent-primary/25' : 'bg-bg-secondary'}`}
     >
-      <dd className="text-gradient-on-dark m-0 text-5xl font-black tabular-nums leading-none tracking-[-0.02em] md:text-6xl">
+      <dd
+        className={`m-0 text-5xl font-black tabular-nums leading-none tracking-[-0.02em] ${
+          anchor ? 'text-white' : 'text-text-primary'
+        }`}
+      >
         {stat.value}
       </dd>
-      <dt className="mt-3.5 text-base font-bold text-white md:text-lg">{stat.label}</dt>
+      <dt className={`mt-4 text-base font-bold md:text-lg ${anchor ? 'text-white' : 'text-text-primary'}`}>
+        {stat.label}
+      </dt>
       {stat.href ? (
         <Link
           to={stat.href}
-          className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-[#7aa2ff] hover:underline"
+          className={`mt-1 inline-flex items-center gap-1 text-sm font-semibold hover:underline ${
+            anchor ? 'text-white' : 'text-accent-primary'
+          }`}
         >
           {stat.note} <ArrowRight size={14} />
         </Link>
       ) : (
-        stat.note && <span className="mt-1 block text-sm text-white/50">{stat.note}</span>
+        stat.note && (
+          <span className={`mt-1 block text-sm ${anchor ? 'text-white/75' : 'text-text-secondary'}`}>
+            {stat.note}
+          </span>
+        )
       )}
     </motion.div>
   );
 }
 
-// ── Brand intro — navy band: claim on the left, 2×2 evidence on the right ──
-// The one dark section between the hero and the final CTA. It sits on the
-// same navy as the service cards and footer, so the brand gradient reads at
-// full strength here without the white-on-white problem the old cards had.
+// ── Brand intro — claim above, four evidence cards below ──
+// The hero directly above is black, so this band must stay light: a dark
+// fill here merges with it into one unbroken block and the section reads as
+// missing. Cards carry a filled surface (not a hairline border) so they are
+// visible on white, and the copyright claim takes the brand gradient.
 const BrandIntro = () => {
   const { brandIntro } = useContent('home');
+  const anchor = brandIntro.stats.findIndex((s) => s.value === '0건');
 
   return (
-    <section className="bg-[#0b1020] py-20 text-white md:py-28">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-20">
-        {/* 주장 */}
-        <div className="lg:col-span-5">
-          <motion.span
-            initial="hidden" animate="visible" variants={fadeInUp}
-            className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-[#5b8cff]"
-          >
-            {brandIntro.eyebrow}
-          </motion.span>
-          <motion.h2
-            initial="hidden" animate="visible" variants={fadeInUp}
-            className="whitespace-pre-line text-4xl font-black leading-[1.12] tracking-[-0.01em] text-white md:text-6xl"
-          >
-            <Accented text={brandIntro.headline} accent={brandIntro.accent} onDark />
-          </motion.h2>
+    <section className="border-b border-border-primary bg-bg-primary py-20 md:py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="grid gap-8 md:grid-cols-2 md:items-end md:gap-16">
+          <div>
+            <motion.span
+              initial="hidden" animate="visible" variants={fadeInUp}
+              className="mb-4 block text-sm font-bold uppercase tracking-[0.2em] text-accent-primary"
+            >
+              {brandIntro.eyebrow}
+            </motion.span>
+            <motion.h2
+              initial="hidden" animate="visible" variants={fadeInUp}
+              className="whitespace-pre-line text-4xl font-black leading-[1.12] tracking-[-0.01em] text-text-primary md:text-6xl"
+            >
+              <Accented text={brandIntro.headline} accent={brandIntro.accent} />
+            </motion.h2>
+          </div>
           <motion.p
             initial="hidden" animate="visible" variants={fadeInUp}
-            className="mt-6 max-w-md text-lg leading-relaxed text-white/60"
+            className="text-lg leading-relaxed text-text-secondary"
           >
             {brandIntro.body.replace(/\n/g, ' ')}
           </motion.p>
@@ -134,10 +149,10 @@ const BrandIntro = () => {
             observer firing; a stuck reveal used to leave this band empty. */}
         <motion.dl
           variants={stagger} initial="hidden" animate="visible"
-          className="m-0 grid grid-cols-1 sm:grid-cols-2 lg:col-span-7"
+          className="m-0 mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-16 md:gap-5 lg:grid-cols-4"
         >
-          {brandIntro.stats.map((s) => (
-            <StatCell key={s.label} stat={s} />
+          {brandIntro.stats.map((s, i) => (
+            <StatCard key={s.label} stat={s} anchor={i === anchor} />
           ))}
         </motion.dl>
       </div>
