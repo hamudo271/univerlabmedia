@@ -110,6 +110,15 @@ body {
   background-clip: text;
   color: transparent;
 }
+/* Same gradient, lifted for navy/black surfaces where the light-theme
+   accents sit too dark. Uses the dark-palette accent values directly so it
+   reads the same regardless of the active theme class. */
+.text-gradient-on-dark {
+  background: linear-gradient(120deg, #5b8cff, #a78bfa 65%, #7aa2ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
 /* Glass card */
 .glass {
