@@ -41,6 +41,12 @@ router.post("/", async (req, res, next) => {
       return res.status(400).json({ error: "개인정보 수집 및 이용에 동의해주세요." });
     }
 
+    // 휴대폰 번호는 11자리 완성본만 받는다. 프론트 검증을 우회한 직접 요청도
+    // 여기서 걸러진다.
+    if (String(b.phone).replace(/\D/g, "").length !== 11) {
+      return res.status(400).json({ error: "전화번호 11자리를 모두 입력해주세요. (예: 010-1234-5678)" });
+    }
+
     if (!RESEND_API_KEY) {
       console.warn("[contact] RESEND_API_KEY not set — cannot send email.");
       return res.status(503).json({ error: "메일 발송이 아직 설정되지 않았습니다. 잠시 후 다시 시도해주세요." });
