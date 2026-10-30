@@ -17,6 +17,7 @@ import SmoothScroll from './components/common/SmoothScroll';
 import ScrollToTop from './components/common/ScrollToTop';
 import TopProgressBar from './components/common/TopProgressBar';
 import Analytics from './components/common/Analytics';
+import VisitTracker from './components/common/VisitTracker';
 import ChannelTalk from './components/common/ChannelTalk';
 
 // Admin (incl. the Tiptap editor) is code-split so public visitors never
@@ -27,6 +28,7 @@ function PublicSite() {
   return (
     <SmoothScroll>
       <Analytics />
+      <VisitTracker />
       <ChannelTalk />
       <ScrollToTop />
       <TopProgressBar />

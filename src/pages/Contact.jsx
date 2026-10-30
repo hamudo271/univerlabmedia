@@ -4,6 +4,7 @@ import { MapPin, Phone, Mail, Clock, Send, Info, Plus, Minus, CheckCircle2, Load
 import SEO from '../components/SEO';
 import { PageHero, SectionHeader, fadeInUp } from '../components/common/ui.jsx';
 import { useContent } from '../context/ContentContext.jsx';
+import { attributionFields } from '../lib/track.js';
 
 const infoIcons = {
   Email: Mail,
@@ -88,7 +89,7 @@ const Contact = () => {
       setError('전화번호 11자리를 모두 입력해주세요. (예: 010-1234-5678)');
       return;
     }
-    const payload = Object.fromEntries(fd.entries());
+    const payload = { ...Object.fromEntries(fd.entries()), ...attributionFields() };
     payload.consent = true;
     setStatus('sending');
     try {

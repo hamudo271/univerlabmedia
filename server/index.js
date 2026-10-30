@@ -17,6 +17,9 @@ import contactRoutes from "./routes/contact.js";
 import postRoutes from "./routes/posts.js";
 import adminPostRoutes from "./routes/adminPosts.js";
 import adminStatsRoutes from "./routes/adminStats.js";
+import adminInquiryRoutes from "./routes/adminInquiries.js";
+import adminAnalyticsRoutes from "./routes/adminAnalytics.js";
+import trackRoutes, { pruneOldVisits } from "./routes/track.js";
 import { errorHandler, apiNotFound } from "./middleware/errorHandler.js";
 import { UPLOAD_DIR } from "./lib/uploads.js";
 import { toPost } from "./lib/posts.js";
@@ -95,6 +98,9 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/admin/posts", adminPostRoutes);
 app.use("/api/admin/stats", adminStatsRoutes);
+app.use("/api/admin/inquiries", adminInquiryRoutes);
+app.use("/api/admin/analytics", adminAnalyticsRoutes);
+app.use("/api/v", trackRoutes);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api", apiNotFound);
@@ -297,6 +303,8 @@ app.use(errorHandler);
   try {
     await runMigrations();
     await seedDefaultsIfMissing();
+    await pruneOldVisits();
+    setInterval(pruneOldVisits, 24 * 60 * 60 * 1000).unref();
   } catch (err) {
     console.error("[db] migration/seed failed:", err);
     // Keep serving the SPA even if DB is down; admin APIs will 503.

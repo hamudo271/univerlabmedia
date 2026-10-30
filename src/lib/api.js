@@ -120,3 +120,29 @@ export const adminPostsApi = {
     api.patch(`/admin/posts/${id}/status`, { status }, { auth: true }),
   remove: (id) => api.del(`/admin/posts/${id}`, { auth: true }),
 };
+
+// Admin (auth) — 문의 관리
+export const adminInquiriesApi = {
+  list: ({ status, q } = {}) => {
+    const qs = new URLSearchParams();
+    if (status) qs.set("status", status);
+    if (q) qs.set("q", q);
+    const s = qs.toString();
+    return api.get(`/admin/inquiries${s ? `?${s}` : ""}`, { auth: true });
+  },
+  count: () => api.get("/admin/inquiries/count", { auth: true }),
+  get: (id) => api.get(`/admin/inquiries/${id}`, { auth: true }),
+  update: (id, data) => api.patch(`/admin/inquiries/${id}`, data, { auth: true }),
+  remove: (id) => api.del(`/admin/inquiries/${id}`, { auth: true }),
+};
+
+// Admin (auth) — 유입 분석 (자체 방문 집계)
+export const adminAnalyticsApi = {
+  get: ({ from, to } = {}) => {
+    const qs = new URLSearchParams();
+    if (from) qs.set("from", from);
+    if (to) qs.set("to", to);
+    const s = qs.toString();
+    return api.get(`/admin/analytics${s ? `?${s}` : ""}`, { auth: true });
+  },
+};

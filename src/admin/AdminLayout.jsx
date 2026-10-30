@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Sidebar from "./Sidebar.jsx";
 import { clearToken } from "../lib/api.js";
 
-export default function AdminLayout({ children, onLogout }) {
+export default function AdminLayout({ children, onLogout, wide = false }) {
   function handleLogout() {
     clearToken();
     onLogout?.();
@@ -36,7 +36,7 @@ export default function AdminLayout({ children, onLogout }) {
       <div className="flex-1 flex min-h-0">
         <Sidebar />
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto p-8">{children}</div>
+          <div className={`${wide ? "max-w-7xl" : "max-w-5xl"} mx-auto p-8`}>{children}</div>
         </main>
       </div>
     </div>
