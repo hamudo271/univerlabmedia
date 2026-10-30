@@ -1,8 +1,13 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import { schema, pageOrder } from "../../shared/content-schema.js";
+import { useNewInquiryCount } from "./inquiries/useNewCount.js";
+
+const navCls = (on, active, idle) =>
+  `mx-3 mb-1 flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-center text-sm font-bold transition ${on ? active : idle}`;
 
 export default function Sidebar() {
+  const newCount = useNewInquiryCount();
   return (
     <nav className="w-64 shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col">
       <div className="p-5 border-b border-slate-800">
@@ -22,16 +27,35 @@ export default function Sidebar() {
       </Link>
 
       <NavLink
-        to="/admin/stats"
+        to="/admin/inquiries"
         className={({ isActive }) =>
-          `mx-3 mb-1 block rounded-md px-4 py-2.5 text-center text-sm font-bold transition ${
-            isActive
-              ? "bg-emerald-600 text-white"
-              : "bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/40"
-          }`
+          navCls(isActive, "bg-amber-500 text-slate-950", "bg-amber-500/15 text-amber-200 hover:bg-amber-500/30")
         }
       >
-        📊 방문자 통계
+        📩 문의 관리
+        {newCount > 0 && (
+          <span className="rounded-full bg-red-500 px-1.5 py-px text-[11px] font-black leading-4 text-white">
+            {newCount}
+          </span>
+        )}
+      </NavLink>
+
+      <NavLink
+        to="/admin/analytics"
+        className={({ isActive }) =>
+          navCls(isActive, "bg-sky-600 text-white", "bg-sky-600/20 text-sky-300 hover:bg-sky-600/40")
+        }
+      >
+        🧭 유입 분석
+      </NavLink>
+
+      <NavLink
+        to="/admin/stats"
+        className={({ isActive }) =>
+          navCls(isActive, "bg-emerald-600 text-white", "bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/40")
+        }
+      >
+        📊 방문자 통계 (GA4)
       </NavLink>
 
       <div className="px-5 pt-3 pb-1 text-[10px] uppercase tracking-wider text-slate-600">

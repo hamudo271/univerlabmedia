@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, useEditorState, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
+import { TableKit } from '@tiptap/extension-table';
 import {
   Bold, Italic, List, ListOrdered, Quote, Heading2, Heading3,
-  Link2, Image as ImageIcon, Undo2, Redo2, Loader2,
+  Link2, Image as ImageIcon, Undo2, Redo2, Loader2, Table as TableIcon,
 } from 'lucide-react';
 
 function Btn({ onClick, active, disabled, title, children }) {
@@ -47,10 +48,18 @@ export default function Editor({ initialContent = '', onChange, uploadImage }) {
       }),
       Image.configure({ HTMLAttributes: { class: 'rounded-lg' } }),
       Placeholder.configure({ placeholder: '본문을 입력하세요…' }),
+      // 표: 기존 칼럼의 비교표가 저장 때 지워지지 않도록 반드시 필요하다.
+      // 공개 페이지에서는 shared/wrapTables.js 가 가로 스크롤 래퍼를 다시 씌운다.
+      TableKit.configure({ table: { resizable: false } }),
     ],
     content: initialContent,
     editorProps: { attributes: { class: 'post-prose min-h-[340px] px-5 py-4' } },
     onUpdate: ({ editor }) => onChange?.(editor.getHTML()),
+  });
+
+  const inTable = useEditorState({
+    editor,
+    selector: ({ editor: e }) => !!e?.isActive('table'),
   });
 
   if (!editor) {
@@ -100,11 +109,39 @@ export default function Editor({ initialContent = '', onChange, uploadImage }) {
         <Btn title="이미지 삽입" disabled={uploading} onClick={() => fileRef.current?.click()}>
           {uploading ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
         </Btn>
+        <Btn
+          title="표 넣기 (3×3, 첫 줄 제목)"
+          active={inTable}
+          disabled={inTable}
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+        >
+          <TableIcon size={16} />
+        </Btn>
         <span className="w-px h-5 bg-black/10 mx-1" />
         <Btn title="실행취소" disabled={!editor.can().undo()} onClick={() => editor.chain().focus().undo().run()}><Undo2 size={16} /></Btn>
         <Btn title="다시실행" disabled={!editor.can().redo()} onClick={() => editor.chain().focus().redo().run()}><Redo2 size={16} /></Btn>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
       </div>
+      {inTable && (
+        <div className="flex flex-wrap items-center gap-1.5 px-2 py-1.5 border-b border-black/10 bg-accent-primary/5 text-xs">
+          <span className="mr-1 font-bold text-accent-primary">표</span>
+          <Btn title="아래에 행 추가" onClick={() => editor.chain().focus().addRowAfter().run()}>+ 행</Btn>
+          <Btn title="오른쪽에 열 추가" onClick={() => editor.chain().focus().addColumnAfter().run()}>+ 열</Btn>
+          <Btn title="이 행 삭제" onClick={() => editor.chain().focus().deleteRow().run()}>− 행</Btn>
+          <Btn title="이 열 삭제" onClick={() => editor.chain().focus().deleteColumn().run()}>− 열</Btn>
+          <Btn title="첫 줄을 제목 행으로 켜기/끄기" onClick={() => editor.chain().focus().toggleHeaderRow().run()}>제목 행</Btn>
+          <Btn title="셀 합치기 / 나누기" onClick={() => editor.chain().focus().mergeOrSplit().run()}>셀 합치기·나누기</Btn>
+          <span className="w-px h-5 bg-black/10 mx-1" />
+          <Btn
+            title="표 전체 삭제"
+            onClick={() => {
+              if (window.confirm('이 표를 통째로 삭제할까요?')) editor.chain().focus().deleteTable().run();
+            }}
+          >
+            <span className="text-red-600">표 삭제</span>
+          </Btn>
+        </div>
+      )}
       <EditorContent editor={editor} />
     </div>
   );

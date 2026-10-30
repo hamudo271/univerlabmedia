@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { attr, text, jsonForScript } from "./html.js";
+import { wrapTables } from "../../shared/wrapTables.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_HTML = path.join(__dirname, "..", "..", "dist", "index.html");
@@ -150,7 +151,7 @@ export function renderColumnPost(post) {
     (post.thumbnailUrl
       ? `<img src="${attr(image)}" alt="${attr(post.title)}" />`
       : "") +
-    `<div>${post.content || ""}</div>` +
+    `<div>${wrapTables(post.content || "")}</div>` +
     `</article>`;
 
   html = html.replace(

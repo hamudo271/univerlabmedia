@@ -7,6 +7,9 @@ import Stats from "./Stats.jsx";
 import PostsLayout from "./posts/PostsLayout.jsx";
 import PostList from "./posts/PostList.jsx";
 import PostEditor from "./posts/PostEditor.jsx";
+import InquiryList from "./inquiries/InquiryList.jsx";
+import InquiryDetail from "./inquiries/InquiryDetail.jsx";
+import Analytics from "./insights/Analytics.jsx";
 import { authApi, getToken, clearToken } from "../lib/api.js";
 import { pageOrder } from "../../shared/content-schema.js";
 
@@ -14,6 +17,9 @@ import { pageOrder } from "../../shared/content-schema.js";
  * AdminApp — gatekeeper. If no valid token, shows <Login>. Otherwise routes:
  *   /admin/posts*        → 칼럼 관리 (밝은 DCD 스타일 레이아웃)
  *   /admin/pages/:key    → 페이지 콘텐츠 CMS (기존 다크 레이아웃)
+ *   /admin/inquiries*    → 문의 관리 (다크 레이아웃)
+ *   /admin/analytics     → 유입 분석 — 자체 방문 집계 (다크 레이아웃)
+ *   /admin/stats         → 방문자 통계 — GA4 (다크 레이아웃)
  * 칼럼 관리를 기본 랜딩으로 둔다.
  */
 export default function AdminApp() {
@@ -85,6 +91,34 @@ export default function AdminApp() {
         }
       />
 
+      {/* 문의 관리 */}
+      <Route
+        path="inquiries"
+        element={
+          <AdminLayout onLogout={logout} wide>
+            <InquiryList />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="inquiries/:id"
+        element={
+          <AdminLayout onLogout={logout}>
+            <InquiryDetailKeyed />
+          </AdminLayout>
+        }
+      />
+
+      {/* 유입 분석 (자체 방문 집계 + 문의) */}
+      <Route
+        path="analytics"
+        element={
+          <AdminLayout onLogout={logout} wide>
+            <Analytics />
+          </AdminLayout>
+        }
+      />
+
       {/* 방문자 통계 (GA4) */}
       <Route
         path="stats"
@@ -104,6 +138,12 @@ export default function AdminApp() {
 function PostEditorKeyed() {
   const { id } = useParams();
   return <PostEditor key={id} />;
+}
+
+// Remount when jumping between inquiries (e.g. "같은 번호로 들어온 다른 문의").
+function InquiryDetailKeyed() {
+  const { id } = useParams();
+  return <InquiryDetail key={id} />;
 }
 
 // Tiny wrapper so we can read the URL param + guard unknown page keys.

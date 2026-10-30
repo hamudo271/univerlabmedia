@@ -1,6 +1,7 @@
 import { NavLink, Link } from 'react-router-dom';
-import { FileText, PlusCircle, ExternalLink, LogOut, LayoutPanelLeft, BarChart3 } from 'lucide-react';
+import { FileText, PlusCircle, ExternalLink, LogOut, LayoutPanelLeft, BarChart3, Inbox, Compass } from 'lucide-react';
 import { pageOrder } from '../../../shared/content-schema.js';
+import { useNewInquiryCount } from '../inquiries/useNewCount.js';
 
 function TabLink({ to, children }) {
   return (
@@ -23,6 +24,7 @@ function TabLink({ to, children }) {
  * 시각적으로 구분되는 별도 도구. 인증은 AdminApp 게이트가 이미 처리.
  */
 export default function PostsLayout({ children, onLogout }) {
+  const newCount = useNewInquiryCount();
   return (
     <div className="min-h-screen bg-bg-secondary text-text-primary">
       <header className="bg-white border-b border-black/10 sticky top-0 z-20">
@@ -35,6 +37,21 @@ export default function PostsLayout({ children, onLogout }) {
             </nav>
           </div>
           <div className="flex items-center gap-4">
+            <Link
+              to="/admin/inquiries"
+              className="text-sm text-text-secondary hover:text-accent-primary inline-flex items-center gap-1"
+            >
+              <Inbox size={14} /> 문의 관리
+              {newCount > 0 && (
+                <span className="rounded-full bg-red-500 px-1.5 text-[11px] font-black leading-4 text-white">{newCount}</span>
+              )}
+            </Link>
+            <Link
+              to="/admin/analytics"
+              className="text-sm text-text-secondary hover:text-accent-primary inline-flex items-center gap-1"
+            >
+              <Compass size={14} /> 유입 분석
+            </Link>
             <Link
               to="/admin/stats"
               className="text-sm text-text-secondary hover:text-accent-primary inline-flex items-center gap-1"

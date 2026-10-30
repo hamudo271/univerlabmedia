@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import SEO, { SITE_NAME, SITE_URL } from '../components/SEO';
 import { FinalCta, fadeInUp } from '../components/common/ui.jsx';
 import { postsApi } from '../lib/api.js';
+import { wrapTables } from '../../shared/wrapTables.js';
 
 function fmtDate(iso) {
   const d = new Date(iso);
@@ -143,7 +144,7 @@ const ColumnDetail = () => {
 
           <div
             className="post-prose"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: wrapTables(post.content) }}
           />
         </motion.div>
       </article>

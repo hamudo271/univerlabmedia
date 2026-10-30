@@ -184,12 +184,13 @@ body {
 .post-prose .table-wrap { overflow-x: auto; margin-top: 1.75rem; }
 .post-prose table {
   width: 100%;
-  min-width: 34rem;
+  /* 편집기(Tiptap)가 표에 인라인 min-width 를 붙이므로 !important 로 덮는다 */
+  min-width: 34rem !important;
   border-collapse: collapse;
   font-size: 15px;
   line-height: 1.6;
 }
-.post-prose thead th {
+.post-prose th {
   background: var(--bg-secondary);
   font-weight: 700;
   text-align: left;
@@ -206,6 +207,19 @@ body {
 }
 /* 표 안에서는 문단 간격 규칙을 끈다 */
 .post-prose table p { margin-top: 0; }
+.post-prose th p, .post-prose td p { margin: 0; }
+
+/* 편집기 안의 표: 넓은 표는 편집 영역 안에서 가로 스크롤, 선택한 셀 강조 */
+.post-prose.ProseMirror { overflow-x: auto; }
+.post-prose.ProseMirror table { min-width: 0 !important; }
+.post-prose.ProseMirror td, .post-prose.ProseMirror th { position: relative; min-width: 4rem; }
+.post-prose.ProseMirror .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent-primary) 14%, transparent);
+  pointer-events: none;
+}
 
 /* Tiptap 편집 영역 */
 .post-prose.ProseMirror:focus { outline: none; }
